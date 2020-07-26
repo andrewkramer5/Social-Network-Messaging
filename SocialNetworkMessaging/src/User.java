@@ -1,58 +1,39 @@
-import java.util.*;
-
+import java.util.ArrayList;
 
 public class User {
-    private static int id = 1; //unique identifier
-    private String handle;
+	private String handle;
     private String password;
     private ArrayList<User> friends;
-    //private ArrayList<Chat> chats;
-    private int numFriends;
-
-    public User(String handle, String password) {
-        id++;
-        this.handle = handle;
-        this.password = password;
-        friends = new ArrayList<>();
-        numFriends = 0;
+    
+    public User(String handle, String password, ArrayList<User> friends) {
+    	this.handle = handle;
+    	this.password = password;
+    	this.friends = friends;
     }
 
-    public String getHandle() {
-        return handle;
-    }
+	public String getHandle() {
+		return handle;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void changeHandle(String handle) {
-        //gui menu
-        this.handle = handle;
-        //confirmation
-    }
+	public ArrayList<User> getFriends() {
+		return friends;
+	}
 
-    public void changePassword(String password) {
-        //gui menu
-        this.password = password;
-        //confirmation
-    }
+	public void setHandle(String handle) {
+		this.handle = handle;
+	}
 
-    private void addFriends(User u) {
-        //add gui menu here
-        friends.add(u);
-        numFriends++;
-        //show gui confirmation
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    private void removeFriend(User u) {
-        //add gui menu here
-        if(friends.contains(u)) {
-            friends.remove(u);
-            numFriends--;
-            //have gui print confirmation
-        }
-        else {
-            //have gui go back to main menu
-        }
-    }
+	public void setFriends(ArrayList<User> friends) {
+		this.friends = friends;
+	}
+    
+    
 }
