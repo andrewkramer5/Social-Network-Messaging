@@ -18,6 +18,10 @@ public class User implements Serializable {
         chats = new ArrayList<>();
         numFriends = 0;
     }
+    
+    public User() {
+    	
+    }
 
     public String getHandle() {
         return handle;
@@ -51,7 +55,7 @@ public class User implements Serializable {
         this.chats = chats;
     }
 
-    public void addFriends(User u) {
+    public void addFriend(User u) {
         if(!friends.contains(u)) {
             friends.add(u);
             numFriends++;
@@ -59,17 +63,15 @@ public class User implements Serializable {
     }
 
     public void removeFriend(User u) {
-        //add gui menu here
         if(friends.contains(u)) {
             friends.remove(u);
             numFriends--;
-            //have gui print confirmation
         }
     }
 
     public void addChat(Chat c)  {
         if(!chats.contains(c)) {
-            chats.add(c)
+            chats.add(c);
         }
     }
     public void removeChat(Chat c) {
