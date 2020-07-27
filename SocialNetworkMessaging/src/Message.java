@@ -23,3 +23,4 @@ public class Message {
         this.content = content;
     }
 }
+
