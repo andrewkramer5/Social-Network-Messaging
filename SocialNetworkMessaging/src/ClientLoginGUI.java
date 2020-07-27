@@ -1,21 +1,21 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Rectangle;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ClientLoginGUI extends JPanel implements Runnable {
+public class ClientLoginGUI extends JPanel {
 	
-	public final int WIDTH = 600;
-	public final int HEIGHT = 400;
+	public final int WINDOW_WIDTH;
+	public final int WINDOW_HEIGHT;
 	
-	JFrame frame;
 	JLabel handleLabel;
 	JLabel passwordLabel;
 	JTextField handleField;
@@ -23,41 +23,56 @@ public class ClientLoginGUI extends JPanel implements Runnable {
 	JButton loginButton;
 	JButton makeAccountButton;
 	
-	@Override
-	public void run() {
-		frame = new JFrame("WSC Messenger");
-		frame.add(this);
-		frame.setSize(600, 400);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setVisible(true);
+	public ClientLoginGUI(int width, int height) {
 		
-		JPanel handlePanel = new JPanel();
+		this.WINDOW_WIDTH = width;
+		this.WINDOW_HEIGHT = height;
+		
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
 		handleLabel = new JLabel("Username");
-		handleField = new JTextField(20);
-		handlePanel.add(handleLabel);
-		handlePanel.add(handleField);
-		//handlePanel.setBackground(Color.pink);
+		handleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		c.gridx = 1;
+		c.gridy = 1;
+		c.ipadx = 20;
+		c.ipady = 20;
+		this.add(handleLabel, c);
 		
-		JPanel passwordPanel = new JPanel();
+		handleField = new JTextField(20);
+		//handleField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		c.gridx = 2;
+		c.gridwidth = 2;
+		this.add(handleField, c);
+		
 		passwordLabel = new JLabel("Password");
+		passwordLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		c.gridx = 1;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		this.add(passwordLabel, c);
+		
 		passwordField = new JTextField(20);
-		passwordPanel.add(passwordLabel);
-		passwordPanel.add(passwordField);
-		//passwordPanel.setBackground(Color.blue);
+		c.gridx = 2;
+		c.gridwidth = 2;
+		this.add(passwordField, c);
+		
+		JLabel empty = new JLabel();
+		c.gridy = 3;
+		this.add(empty, c);
 		
 		loginButton = new JButton("Login");
-		loginButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+		c.gridy = 4;
+		c.gridwidth = 1;
+		c.insets = new Insets(10, 10, 10, 10);
+		this.add(loginButton, c);
+		
 		makeAccountButton = new JButton("Make New Account");
-		makeAccountButton.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+		c.gridy = 5;
+		this.add(makeAccountButton, c);
 		
-		this.add(handlePanel);
-		this.add(passwordPanel);
-		this.add(loginButton);
-		this.add(makeAccountButton);
-		//this.setBackground(Color.green);
-		
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(90, 0, 90, 0));
+		this.setOpaque(true);
+		this.setPreferredSize(new Dimension(this.WINDOW_WIDTH, this.WINDOW_HEIGHT));
 	}
 }
