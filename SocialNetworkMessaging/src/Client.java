@@ -15,26 +15,7 @@ public class Client {
         this.out = new ObjectOutputStream(s.getOutputStream());
         this.in = new ObjectInputStream(s.getInputStream());
     }
-    public boolean verifySignIn(Packet p) {
-        return p.isVerified();
-    }
-
-    public boolean verifyNewUser(Packet p) {
-        return p.isVerified();
-    }
-
-    public boolean verifyNewChat(Packet p) {
-        return p.isVerified();
-    }
-
-    public boolean verifyChangeUserName(Packet p) {
-        return p.isVerified();
-    }
-
-    public boolean verifyChangeChatName(Packet p) {
-        return p.isVerified();
-    }
-
+    
     public void sendPacket(Packet p) throws IOException{
         this.out.writeObject(p);
     }
