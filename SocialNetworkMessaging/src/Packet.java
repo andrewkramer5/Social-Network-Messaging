@@ -2,6 +2,7 @@ public class Packet {
     private String identifier; // String indicating which method to invoke on the packet
     private String handle; // String indicating a user's handle/username
     private String newHandle; // String indicating a new handle of a user
+    private String friendHandle; // String indicating friend's handle
     private String password; // String indicating user's password
     private String chatName; // String indicating name of a Chat object
     private String newChatName; // String indicating a new chat name
@@ -10,13 +11,21 @@ public class Packet {
     private String[] handles; // String array of handles consisting of users in a chat
     private boolean verified; // Boolean which is true if an action was successfully completed
     private String description; // String that describes the results of an attempted server interaction
-    private User user; // User object sent with verification messages to update 
 
-
+    //Constructor used for
+    //updating
+    public Packet(String identifier) {
+    	this.identifier = identifier;
+    }
+    
+    
+    
 	//Constructor used for:
     //deleteChat	(option = chatName)
     //signIn		(option = password)
     //addUser		(option = password)
+    //changePassword(option = password)
+    //addFriend		(option = friendHandle)
     public Packet(String identifier, String handle, String option) {
     	this.identifier = identifier;
     	this.handle = handle;
@@ -25,34 +34,42 @@ public class Packet {
     		
     		this.chatName = option;
     		
-    	} else if (identifier.equals("signIn") || identifier.equals("addUser")) {
+    	} else if (identifier.equals("signIn") || identifier.equals("addUser")
+    			|| identifier.equals("changePassword")) {
     		
     		this.password = option;
+    	} else if (identifier.equals("addFriend")) {
+    		this.friendHandle = option;
     	}
+    }
+    
+    //Constructor used for:
+    //changeChatName
+    public Packet(String identifier, String handle, String chatName, String newChatName) {
+    	this.identifier = identifier;
+    	this.handle = handle;
+    	this.chatName = chatName;
+    	this.newChatName = newChatName;
     }
     
     
     //Constructor used for
     //deleteUser		(option = handle)
     //changeHandle		(option = newHandle)
-    //changeChatName	(option = newChatName)
-    //addFriend			(option = handle (of friend being added))
     //update			(option = handle)
     public Packet(String identifier, String option) {
     	this.identifier = identifier;
-    	if (identifier.equals("deleteUser") || identifier.equals("addFriend") ||
-    			identifier.equals("update")) {
+    	if (identifier.equals("deleteUser") || identifier.equals("update")) {
     		this.handle = option;    		
     	} else if (identifier.equals("changeHandle")) {
     		this.newHandle = option;
-    	} else if (identifier.equals("changeChatName")) {
-    		this.newChatName = option;
     	}
     }
     
     
     //Constructor used for
     //deleteMessage
+    //addMessage
     public Packet(String identifier, String chatName, Message message) {
     	this.identifier = identifier;
     	this.chatName = chatName;
@@ -69,33 +86,25 @@ public class Packet {
     
     //Constructor used for
     //addChat
+    //If the user does not want to assign a chat name, set the String
+    //chatName to "" (a blank string)
     public Packet(String identifier, String[] handles, String chatName) {
     	this.identifier = identifier;
     	this.handles = handles;
     	if (chatName == null) {
-    		this.chatName = null;
+    		this.chatName = "";
     	}
     }
     
     
     //Constructor used for
+    //verifySignIn		(when unsuccessful)
+    //verifyNewUser		(when unsuccessful)
     //verifyNewChat;
     //verifyChangeUsername
     //verifyChangeChatName
     //verifyAddFriend
-    public Packet(String identifier, boolean verified, String description) {
-    	this.identifier = identifier;
-    	this.verified = verified;
-    	this.description = description;
-    }
-    
-    
-    
-    //Constructor used for
-    //verifySignIn
-    //verifyNewUser
-    public Packet(String identifier, boolean verified, String description, User user) {
-    	this.identifier = identifier;
+    public Packet(boolean verified, String description) {
     	this.verified = verified;
     	this.description = description;
     }
@@ -155,6 +164,10 @@ public class Packet {
 
 	public String getDescription() {
 		return description;
+	}
+	
+	public String getFriendHandle() {
+		return friendHandle;
 	}
     
 }
