@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.*;
 
 
-public class User {
+public class User implements Serializable {
     private static int id = 1; //unique identifier
     private String handle;
     private String password;
