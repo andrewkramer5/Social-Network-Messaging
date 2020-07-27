@@ -3,7 +3,6 @@ import java.util.*;
 
 
 public class User implements Serializable {
-    private static int id = 1; //unique identifier
     private String handle;
     private String password;
     private ArrayList<User> friends;
@@ -11,7 +10,6 @@ public class User implements Serializable {
     private int numFriends;
 
     public User(String handle, String password) {
-        id++;
         this.handle = handle;
         this.password = password;
         friends = new ArrayList<>();
@@ -36,24 +34,5 @@ public class User implements Serializable {
         //gui menu
         this.password = password;
         //confirmation
-    }
-
-    private void addFriends(User u) {
-        //add gui menu here
-        friends.add(u);
-        numFriends++;
-        //show gui confirmation
-    }
-
-    private void removeFriend(User u) {
-        //add gui menu here
-        if(friends.contains(u)) {
-            friends.remove(u);
-            numFriends--;
-            //have gui print confirmation
-        }
-        else {
-            //have gui go back to main menu
-        }
     }
 }
