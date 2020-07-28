@@ -15,7 +15,7 @@ public class Client {
         this.out = new ObjectOutputStream(s.getOutputStream());
         this.in = new ObjectInputStream(s.getInputStream());
     }
-    
+
     public void sendPacket(Packet p) throws IOException{
         this.out.writeObject(p);
     }
@@ -30,6 +30,10 @@ public class Client {
 
     public User reciveUser() throws IOException, ClassNotFoundException{
         return (User) this.in.readObject();
+    }
+
+    public void askUpdate() {
+        this.out.writeObject(new Packet("update"));
     }
 
 }
