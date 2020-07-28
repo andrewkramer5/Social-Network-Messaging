@@ -46,7 +46,7 @@ public class WriteToFile {
         while(true) {
             Chat c = (Chat) o.readObject();
             if(c != null) {
-                users.add(c);
+                //users.add(c);
             }
             else {
                 break;
