@@ -104,9 +104,26 @@ public class WSCServer implements Runnable {
                     System.out.println("addChat");
 
                 } else if (ident.equals("update")) {
-                    for (User user : users) { //works serverside
+                    for (User user : users) { //can't tell if it works
                         System.out.println(user.getHandle());
                         if (user.getHandle().equals(packet.getHandle())) {
+                            System.out.println();
+                            System.out.println("User Info:");
+                            System.out.println("Handle: " + user.getHandle());
+                            System.out.println("Password: " + user.getPassword());
+                            System.out.println("Chat Names: ");
+                            for (Chat c: user.getChats()) {
+                                System.out.println(c.getChatName());
+                            }
+                            for (User u: user.getFriends()) {
+                                if(user.getFriends().size() == 0) {
+                                    System.out.println("This user has no friends");
+                                    break;
+                                }
+                                System.out.println("User Info:");
+                                System.out.println("Handle: " + user.getHandle());
+                                System.out.println("Password" + user.getPassword());
+                            }
                             oos.writeObject(user);
                             oos.flush();
                         }
