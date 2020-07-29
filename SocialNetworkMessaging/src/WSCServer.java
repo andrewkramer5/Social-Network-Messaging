@@ -37,10 +37,12 @@ public class WSCServer implements Runnable {
         try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
              ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
             while (true) {
-
+            		
                 Packet packet = (Packet) ois.readObject();
                 String ident = packet.getIdentifier();
                 Packet p;
+                
+                System.out.println("Current ident: " + ident);
 
                 if (ident.equals("deleteChat")) {
                     deleteChat(packet); //doesn't work
@@ -49,34 +51,39 @@ public class WSCServer implements Runnable {
                 } else if (ident.equals("signIn")) {
                     p = signIn(packet); //works
                     oos.writeObject(p);
+                    oos.flush();
                     System.out.println("signIn");
 
                 } else if (ident.equals("addUser")) {
                     p = addUser(packet); //works
                     oos.writeObject(p);
+                    oos.flush();
                     System.out.println("addUser");
 
                 } else if (ident.equals("changePassword")) {
-                    changePassword(packet); //works but glitchy look at test class comment
+                    changePassword(packet); //works serverside
                     System.out.println("changePassword");
 
                 } else if (ident.equals("deleteUser")) {
-                    deleteUser(packet); //doesn't work
+                    deleteUser(packet); //works serverside
                     System.out.println("deleteUser");
 
                 } else if (ident.equals("changeHandle")) {
-                    p = changeHandle(packet); //works but orginal user remains and isn't modified in chat
+                    p = changeHandle(packet); //works serverside
                     oos.writeObject(p);
+                    oos.flush();
                     System.out.println("changeHandle");
 
                 } else if (ident.equals("changeChatName")) {
                     p = changeChatName(packet);
-                    oos.writeObject(p);  //works but old chat name still prints
+                    oos.writeObject(p);  //works serverside
+                    oos.flush();
                     System.out.println("changeChatName");
 
                 } else if (ident.equals("addFriend")) {
                     p = addFriend(packet);  //works
                     oos.writeObject(p);
+                    oos.flush();
                     System.out.println("addFriend");
 
                 } else if (ident.equals("addMessage")) {
@@ -89,22 +96,29 @@ public class WSCServer implements Runnable {
                     System.out.println("deleteMessage");
 
                 } else if (ident.equals("editMessage")) {
+                	System.out.println("Edit message begun");
                     editMessage(packet); //doesn't work
                     System.out.println("editMessage");
 
                 } else if (ident.equals("addChat")) {
                     p = addChat(packet);  //works
                     oos.writeObject(p);
+                    oos.flush();
                     System.out.println("addChat");
 
                 } else if (ident.equals("update")) {
-                    for (User user : users) { //can't tell if it works
+                    for (User user : users) {
+                        System.out.println(user.getHandle());
                         if (user.getHandle().equals(packet.getHandle())) {
                             oos.writeObject(user);
+                            oos.flush();
                         }
                     }
                     System.out.println("update");
+                    System.out.println(toString());
                 }
+                
+                Thread.sleep(100);
 
 //				WriteToFile w = new WriteToFile();
 //
@@ -112,9 +126,11 @@ public class WSCServer implements Runnable {
 
             }
         } catch (IOException e) {
-
+        	e.printStackTrace();
         } catch (ClassNotFoundException a) {
-
+        	a.printStackTrace();
+        } catch (InterruptedException a) {
+        	
         }
     }
 
@@ -135,6 +151,13 @@ public class WSCServer implements Runnable {
                 }
             }
         }
+        for (User u: users) {
+            System.out.println(u.getHandle() + ":");
+            for (Chat c : u.getChats()) {
+                System.out.println(c.getChatName());
+            }
+        }
+        System.out.println();
     }
 
     public Packet signIn(Packet packet) {
@@ -158,6 +181,7 @@ public class WSCServer implements Runnable {
             if (user.getHandle().equals(packet.getHandle())) {
                 user.changePassword(packet.getPassword());
                 System.out.println(user.getHandle());
+                System.out.println(user.getPassword());
             }
         }
     }
@@ -184,12 +208,12 @@ public class WSCServer implements Runnable {
                 for (User friend : (user.getFriends())) {
                     if (friend.getHandle().equals(packet.getHandle())) {
                         user.removeFriend(friend);
-                        for (Chat chat : friend.getChats()) {
-                            for (User chatFriend : chat.getChatMembers()) {
-                                if (chatFriend.getHandle().equals(packet.getHandle())) {
-                                    chat.deleteMember(chatFriend);
-                                }
-                            }
+                    }
+                }
+                for (Chat chat : user.getChats()) {
+                    for (User chatFriend : chat.getChatMembers()) {
+                        if (chatFriend.getHandle().equals(packet.getHandle())) {
+                            chat.deleteMember(chatFriend);
                         }
                     }
                 }
@@ -200,6 +224,28 @@ public class WSCServer implements Runnable {
                     users.remove(user);
                 }
             }
+            for (User u: users) {
+                System.out.println(u.getHandle());
+                if(!u.getFriends().isEmpty()) {
+                    for (User uss : u.getFriends()) {
+                        System.out.println("Handle: " + uss.getHandle());
+                    }
+                }
+                else {
+                    System.out.println("the user has no friends");
+                }
+            }
+            System.out.println();
+            for (User us: users) {
+                for (Chat c: us.getChats()) {
+                    System.out.println(c.getChatName() + ": ");
+                    for (User uss: c.getChatMembers()) {
+                        System.out.println("CHAT User");
+                        System.out.println(uss.getHandle());
+                    }
+                }
+            }
+            System.out.println();
         } catch (ConcurrentModificationException a) {
             deleteUser(packet);
         }
@@ -208,8 +254,33 @@ public class WSCServer implements Runnable {
     public Packet changeHandle(Packet packet) {
         for (User user : users) {
             if (user.getHandle().equals(packet.getNewHandle())) {
-                Packet verify = new Packet(false, "Username already exists");
-                return verify;
+                return new Packet(false, "Username already exists");
+            }
+        }
+        
+        for (User u: users) {
+            if(!u.getHandle().equals(packet.getHandle())) {
+                for (User us: u.getFriends()) {
+                    if(us.getHandle().equals(packet.getHandle())) {
+                        us.changeHandle(packet.getNewHandle());
+                    }
+                }
+                for (Chat c: u.getChats()) {
+                    for (User us: c.getChatMembers()) {
+                        if(us.getHandle().equals(packet.getHandle())) {
+                            us.changeHandle(packet.getNewHandle());
+                        }
+                    }
+                    if (c.getChatName().contains(packet.getHandle() + ", ")) {
+                    	c.setChatName(c.getChatName().replace(packet.getHandle() + ", ", 
+                    			packet.getNewHandle() + ", "));
+                    }
+                    for (Message m : c.getChatContent()) {
+                    	if (m.getHandle().equals(packet.getHandle())) {
+                    		m.setHandle(packet.getNewHandle());
+                    	}
+                    }
+                }
             }
         }
 
@@ -219,9 +290,7 @@ public class WSCServer implements Runnable {
             }
         }
 
-        Packet verify = new Packet(true, "Handle updated succesfully");
-        return verify;
-
+        return new Packet(true, "Handle updated succesfully");
     }
 
     public Packet changeChatName(Packet packet) {
@@ -229,6 +298,13 @@ public class WSCServer implements Runnable {
             for (Chat chat : user.getChats()) {
                 if (chat.getChatName().equals(packet.getChatName())) {
                     chat.setChatName(packet.getNewChatName());
+                    for (User us: users) {
+                        System.out.println(us.getHandle() + ": ");
+                        for (Chat c: us.getChats()) {
+                            System.out.println(c.getChatName());
+                        }
+                    }
+                    System.out.println();
                     return new Packet(true, "Chat name successfully changed");
                 }
             }
@@ -270,7 +346,13 @@ public class WSCServer implements Runnable {
         for (User user : users) {
             for (Chat chat : user.getChats()) {
                 if (chat.getChatName().equals(packet.getChatName())) {
-                    chat.addMessage(packet.getMessage());
+                	if (chat.getChatContent().size() < 1) {
+                		chat.addMessage(packet.getMessage());
+                		continue;
+                	} else if (!chat.getChatContent().get(chat.getChatContent().size() - 1).equals(
+            				packet.getMessage())) {
+                		chat.addMessage(packet.getMessage());
+                	}
                 }
             }
         }
@@ -290,6 +372,9 @@ public class WSCServer implements Runnable {
         for (User user : users) {
             for (Chat chat : user.getChats()) {
                 if (chat.getChatName().equals(packet.getChatName())) {
+                	System.out.println("CORRECT CHAT FOUND");
+                	System.out.println();
+                	System.out.println();
                     chat.editMessage(packet.getOldMessage(), packet.getMessage());
                 }
             }
@@ -349,5 +434,27 @@ public class WSCServer implements Runnable {
             }
         }
         return null;
+    }
+    
+    public String toString() {
+    	String s = "";
+    	for (User user : users) {
+    		s += user.getHandle() + "\n";
+    		s += user.getPassword() + "\n\n";
+    		s += "chats \n";
+    		for (Chat chat : user.getChats()) {
+    			s += chat.getChatName() + "\n\n";
+    			s += "users in chat \n";
+    			for (User u : chat.getChatMembers()) {
+    				s += u.getHandle() + "\n";
+    			}
+    			s += "\n";
+    			for (Message m : chat.getChatContent()) {
+    				s += m.getHandle() + "\n";
+    				s += m.getContent() + "\n\n";
+    			}
+    		}
+    	}
+    	return s;
     }
 }

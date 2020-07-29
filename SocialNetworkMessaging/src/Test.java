@@ -39,7 +39,7 @@ public class Test {
 
         t.signInWithIncorrectPassword();
 
-        t.showData();
+        //t.showData("ehendrich");
 
         //for some reason this method (as well as addMessage) do not instantly
         //update on the server. However, if you run the Test class again, it works
@@ -48,7 +48,7 @@ public class Test {
         //but right now I don't get why its happening.
         t.changePassword();
 
-        t.showData();
+        //t.showData("ehendrich");
 
         t.addMessageFromFirstUser();
 
@@ -58,29 +58,29 @@ public class Test {
 
         t.addAnotherMessageFromSecondUser();
 
-        t.changeHandles();
+        //t.changeHandles();
 
-        t.showData();
+        //t.showData("rajesh");
 
         t.editChat();
-
-        t.showData();
-
-        t.deleteMessage();
-
-        t.showData();
-
-        t.changeChatName();
-
-        t.showData();
-
-        t.deleteChat();
-
-        t.showData();
-
-        t.deleteUser();
-
-        t.showData();
+//
+//        t.showData("raj_the_baller");
+//
+//        t.deleteMessage();
+//
+//        t.showData("rajesh");
+//
+//        t.changeChatName();
+//
+//        t.showData("rajesh");
+//
+//        t.deleteChat();
+//
+//        t.showData("raj_the_baller");
+//
+//        t.deleteUser();
+//
+//        t.showData("rajesh");
 
     }
 
@@ -371,7 +371,7 @@ public class Test {
     }
 
     public void changeHandles() throws IOException , ClassNotFoundException{
-        c.sendPacket(new Packet("changeHandle","raj_the_baller","rajesh"));
+        c.sendPacket(new Packet("changeHandle","ehendrich","rajesh"));
         Packet p = c.receivePacket();
         System.out.println("attempted to change handle");
         System.out.println(p.isVerified());
@@ -379,7 +379,7 @@ public class Test {
     }
 
     public void deleteChat() throws IOException {
-        c.sendPacket(new Packet("deleteChat", "Coding buds"));
+        c.sendPacket(new Packet("deleteChat", "Mad Lads"));
         System.out.println("chat deleted");
     }
 
@@ -388,13 +388,17 @@ public class Test {
     }
 
     public void editChat() throws IOException {
-        c.sendPacket(new Packet("editMessage", new Message("ehendrich", "How are you?"),
-                new Message("ehendrich", "foo bar")));
+    	Packet p = new Packet("editMessage", "ehendrich, raj_the_baller", new Message("ehendrich", "How are you?"), 
+    			new Message("ehendrich", "foo bar"));
+    	
+        c.sendPacket(p);
+        
+        System.out.println("packet sent");
 
     }
 
     public void deleteMessage() throws IOException {
-        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("ehendrich", "How are you?")));
+        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("rajesh", "How are you?")));
     }
 
     public void changeChatName() throws IOException, ClassNotFoundException {
@@ -405,12 +409,12 @@ public class Test {
         System.out.println(p.getDescription());
     }
 
-    public void showData() throws IOException, ClassNotFoundException {
-        Packet p = new Packet("update", "ehendrich");
+    public void showData(String handle) throws IOException, ClassNotFoundException {
+        Packet p = new Packet("update", handle);
 
         c.sendPacket(p);
 
-        User u = c.reciveUser();
+        User u = c.receiveUser();
 
         System.out.println("Handle:");
 
@@ -435,8 +439,8 @@ public class Test {
 
         System.out.println("Chats:");
         int a = 1;
-        System.out.println(u.getChats().get(0).getChatContent().size());
-        System.out.println(u.getChats().get(1).getChatContent().size());
+        //System.out.println(u.getChats().get(0).getChatContent().size());
+//        System.out.println(u.getChats().get(1).getChatContent().size());
 
         for (Chat chat : u.getChats()) {
             System.out.println(a + ". " + chat.getChatName());

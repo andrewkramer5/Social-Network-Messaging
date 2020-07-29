@@ -57,12 +57,19 @@ public class Chat implements Serializable{
 	}
 	
 	public void deleteMessage(Message message) {
-		chatContent.remove(message);
+		for (Message m : getChatContent()) {
+			if (m.getHandle().equals(message.getHandle()) &&
+					m.getContent().equals(message.getContent())) {
+				chatContent.remove(m);
+			}
+		}
 	}
 	
 	public void editMessage(Message message, Message revised) {
 		for (Message m : chatContent) {
-			if (m.equals(message)) {
+			System.out.println(m.getHandle());
+			System.out.println(m.getContent());
+			if (m.getHandle().equals(message.getHandle()) && m.getContent().equals(message.getContent())) {
 				m = revised;
 			}
 		}

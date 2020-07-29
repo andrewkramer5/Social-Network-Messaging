@@ -20,7 +20,7 @@ public class Client {
         this.out.writeObject(p);
     }
 
-    public Packet recivePacket() throws IOException, ClassNotFoundException{
+    public Packet receivePacket() throws IOException, ClassNotFoundException {
         return (Packet) this.in.readObject();
     }
 
@@ -28,12 +28,16 @@ public class Client {
         this.out.writeObject(u);
     }
 
-    public User reciveUser() throws IOException, ClassNotFoundException{
+    public User receiveUser() throws IOException, ClassNotFoundException{
         return (User) this.in.readObject();
     }
 
-    public void askUpdate() {
-        this.out.writeObject(new Packet("update"));
+    public void askUpdate(String handle) {
+    	try {
+    		this.out.writeObject(new Packet("update", handle));
+    	} catch (IOException a) {
+    		a.printStackTrace();
+    	}
     }
 
 }
