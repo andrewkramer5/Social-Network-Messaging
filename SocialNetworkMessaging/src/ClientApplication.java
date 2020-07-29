@@ -22,6 +22,7 @@ public class ClientApplication {
 	public final int WINDOW_WIDTH = 700;
 	public final int WINDOW_HEIGHT = 500;
 	public String[] PANEL_CHOICES = new String[] {"Login Panel", "Chat List Panel", "Chat Panel"};
+	public String currentPanel;
 	
 	private JFrame frame;
 	private JPanel contentPane;
@@ -32,6 +33,7 @@ public class ClientApplication {
 	
 	public ClientApplication(Client client) {
 		this.client = client;
+		this.currentPanel = this.PANEL_CHOICES[1];
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -62,6 +64,9 @@ public class ClientApplication {
         clientChatListPanel = new ClientChatListGUI(this);
         contentPane.add(clientChatListPanel, this.PANEL_CHOICES[1]);
         
+        CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+        cardLayout.show(contentPane, this.currentPanel);
+        
         frame.getContentPane().add(contentPane, BorderLayout.CENTER);       
         frame.pack();   
         frame.setLocationByPlatform(true);
@@ -69,6 +74,7 @@ public class ClientApplication {
     }
 	
 	public void setPanel(String panelName) {
+		this.currentPanel = panelName;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				CardLayout cardLayout = (CardLayout) contentPane.getLayout();

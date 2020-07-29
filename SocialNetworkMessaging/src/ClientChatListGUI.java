@@ -31,6 +31,7 @@ public class ClientChatListGUI extends JPanel {
 	JLabel titleLabel;
 	JScrollPane chatListPane;
 	JPanel accountInfoPane;
+	JScrollPane friendListPane;
 	
 	public ClientChatListGUI(ClientApplication client) {
 		
@@ -60,8 +61,18 @@ public class ClientChatListGUI extends JPanel {
 		c.gridy = 1;
 		this.add(accountInfoPane, c);
 		
+		friendListPane = new JScrollPane();
+		friendListPane.setLayout(new ScrollPaneLayout());
+		c.gridx = 2;
+		c.gridy = 1;
+		this.add(friendListPane, c);
+		
 		this.setBorder(BorderFactory.createEmptyBorder(90, 0, 90, 0));
 		this.setOpaque(true);
 		this.setPreferredSize(new Dimension(this.WINDOW_WIDTH, this.WINDOW_HEIGHT));
+	}
+	
+	public void update() {
+		
 	}
 }

@@ -107,4 +107,8 @@ public class ClientLoginGUI extends JPanel {
 		this.setOpaque(true);
 		this.setPreferredSize(new Dimension(this.WINDOW_WIDTH, this.WINDOW_HEIGHT));
 	}
+	
+	public void update() {
+		
+	}
 }
