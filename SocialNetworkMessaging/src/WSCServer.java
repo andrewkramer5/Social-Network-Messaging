@@ -65,7 +65,7 @@ public class WSCServer implements Runnable {
                     System.out.println("deleteUser");
 
                 } else if (ident.equals("changeHandle")) {
-                    p = changeHandle(packet); //works but doesn't delete the original user
+                    p = changeHandle(packet); //works but doesn't delete the original user and isn't edited in the chat
                     oos.writeObject(p);
                     System.out.println("changeHandle");
 
