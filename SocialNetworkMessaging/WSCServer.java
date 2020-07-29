@@ -104,7 +104,7 @@ public class WSCServer implements Runnable {
                     System.out.println("addChat");
 
                 } else if (ident.equals("update")) {
-                    for (User user : users) {
+                    for (User user : users) { //works serverside
                         System.out.println(user.getHandle());
                         if (user.getHandle().equals(packet.getHandle())) {
                             oos.writeObject(user);
