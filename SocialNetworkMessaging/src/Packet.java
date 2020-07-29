@@ -1,4 +1,6 @@
-public class Packet {
+import java.io.Serializable;
+
+public class Packet implements Serializable{
     private String identifier; // String indicating which method to invoke on the packet
     private String handle; // String indicating a user's handle/username
     private String newHandle; // String indicating a new handle of a user
@@ -11,12 +13,6 @@ public class Packet {
     private String[] handles; // String array of handles consisting of users in a chat
     private boolean verified; // Boolean which is true if an action was successfully completed
     private String description; // String that describes the results of an attempted server interaction
-
-    //Constructor used for
-    //updating
-    public Packet(String identifier) {
-    	this.identifier = identifier;
-    }
     
     
     
@@ -38,6 +34,7 @@ public class Packet {
     			|| identifier.equals("changePassword")) {
     		
     		this.password = option;
+    		
     	} else if (identifier.equals("addFriend")) {
     		this.friendHandle = option;
     	}
@@ -91,9 +88,7 @@ public class Packet {
     public Packet(String identifier, String[] handles, String chatName) {
     	this.identifier = identifier;
     	this.handles = handles;
-    	if (chatName == null) {
-    		this.chatName = "";
-    	}
+    	this.chatName = chatName;
     }
     
     

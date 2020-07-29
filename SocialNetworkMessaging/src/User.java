@@ -18,6 +18,10 @@ public class User implements Serializable {
         chats = new ArrayList<>();
         numFriends = 0;
     }
+    
+    public User() {
+    	
+    }
 
     public String getHandle() {
         return handle;
