@@ -93,7 +93,14 @@ public class ClientLoginGUI extends JPanel {
 		loginButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//TODO check if fields are empty
+				//TODO send login packet to the server
+				//TODO receive verify packet from the server
+				//TODO if packet.isVerified() == false, then use JOptionPane to display error
+				//TODO set logged in user
+				client.setLoggedInUser(new User(handleField.getText(), passwordField.getText()));
 				client.setPanel(client.PANEL_CHOICES[1]);
+				client.getClientChatListGUI().update();
 			}
 		});
 		this.add(loginButton, c);
@@ -101,14 +108,29 @@ public class ClientLoginGUI extends JPanel {
 		makeAccountButton = new JButton("Make New Account");
 		c.gridx = 2;
 		c.gridy = 5;
+		makeAccountButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO check if fields are empty
+				//TODO display JOptionPanes
+				//TODO send add user packet to the server
+				//TODO receive verify packet from the server
+				//TODO if packet.isVerified() == false, then use JOptionPane to display error
+			}
+		});
 		this.add(makeAccountButton, c);
 		
-		this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		this.setOpaque(true);
+		//this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		//this.setOpaque(true);
 		this.setPreferredSize(new Dimension(this.WINDOW_WIDTH, this.WINDOW_HEIGHT));
 	}
 	
 	public void update() {
 		
+	}
+	
+	public void clearFields() {
+		this.handleField.setText("");
+		this.passwordField.setText("");
 	}
 }
