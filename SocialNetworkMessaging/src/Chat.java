@@ -65,12 +65,11 @@ public class Chat implements Serializable{
 		}
 	}
 	
-	public void editMessage(Message message, Message revised) {
+	public void editMessage(Message newMessage, Message oldMessage) {
 		for (Message m : chatContent) {
-			System.out.println(m.getHandle());
-			System.out.println(m.getContent());
-			if (m.getHandle().equals(message.getHandle()) && m.getContent().equals(message.getContent())) {
-				m = revised;
+			if (m.getHandle().equals(oldMessage.getHandle()) && m.getContent().equals(oldMessage.getContent())) {
+				System.out.println("YOU FOUND IT");
+				m.setContent(newMessage.getContent());
 			}
 		}
 	}

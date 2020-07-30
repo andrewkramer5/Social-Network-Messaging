@@ -58,29 +58,34 @@ public class Test {
 
         t.addAnotherMessageFromSecondUser();
 
-        //t.changeHandles();
+        t.changeHandles();
 
-        //t.showData("rajesh");
+        t.showData("rajesh");
 
         t.editChat();
+
+        //t.showData("raj_the_baller");
+
+        t.deleteMessage();
+
+        t.showData("rajesh");
+
+        t.changeChatName();
 //
-//        t.showData("raj_the_baller");
+        t.showData("rajesh");
 //
-//        t.deleteMessage();
+        t.deleteChat();
 //
-//        t.showData("rajesh");
+//        //t.showData("raj_the_baller");
 //
-//        t.changeChatName();
-//
-//        t.showData("rajesh");
-//
-//        t.deleteChat();
-//
-//        t.showData("raj_the_baller");
-//
-//        t.deleteUser();
-//
-//        t.showData("rajesh");
+        t.deleteUser();
+
+        t.showData("rajesh");
+        
+        c.sendPacket(new Packet("end", "now"));
+        
+        s.close();
+        
 
     }
 
@@ -325,6 +330,10 @@ public class Test {
 
         c.sendPacket(p);
 
+        Packet verify = c.receivePacket();  
+        
+        System.out.println(verify.getDescription());      
+
         System.out.println("Attempt to change password to newPassword");
 
         System.out.println();
@@ -334,6 +343,10 @@ public class Test {
         Packet p = new Packet("addMessage", "Coding buds", new Message("ehendrich", "Hello Raj"));
 
         c.sendPacket(p);
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
 
         System.out.println("Attempt to send message from ehendrich");
 
@@ -345,6 +358,10 @@ public class Test {
 
         c.sendPacket(p);
 
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+
         System.out.println("Attempt to send message from raj_the_baller");
 
         System.out.println();
@@ -354,6 +371,10 @@ public class Test {
         Packet p = new Packet("addMessage", "ehendrich, raj_the_baller", new Message("ehendrich", "How are you?"));
 
         c.sendPacket(p);
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
 
         System.out.println("Attempt to send another message from ehendrich");
 
@@ -365,12 +386,16 @@ public class Test {
 
         c.sendPacket(p);
 
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+
         System.out.println("Attempt to send another message from raj_the_baller");
 
         System.out.println();
     }
 
-    public void changeHandles() throws IOException , ClassNotFoundException{
+    public void changeHandles() throws IOException , ClassNotFoundException {
         c.sendPacket(new Packet("changeHandle","ehendrich","rajesh"));
         Packet p = c.receivePacket();
         System.out.println("attempted to change handle");
@@ -378,27 +403,44 @@ public class Test {
         System.out.println();
     }
 
-    public void deleteChat() throws IOException {
-        c.sendPacket(new Packet("deleteChat", "Mad Lads"));
+    public void deleteChat() throws IOException , ClassNotFoundException {
+        c.sendPacket(new Packet("deleteChat", "rajesh", "Mad Lads"));
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+        
         System.out.println("chat deleted");
     }
 
-    public void deleteUser() throws IOException{
+    public void deleteUser() throws IOException , ClassNotFoundException {
         c.sendPacket(new Packet("deleteUser", "raj_the_baller"));
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
     }
 
-    public void editChat() throws IOException {
-    	Packet p = new Packet("editMessage", "ehendrich, raj_the_baller", new Message("ehendrich", "How are you?"), 
-    			new Message("ehendrich", "foo bar"));
+    public void editChat() throws IOException , ClassNotFoundException {
+    	Packet p = new Packet("editMessage", "rajesh, raj_the_baller", new Message("rajesh", "How are you?"), 
+    			new Message("rajesh", "foo bar"));
     	
         c.sendPacket(p);
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
         
         System.out.println("packet sent");
 
     }
 
-    public void deleteMessage() throws IOException {
-        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("rajesh", "How are you?")));
+    public void deleteMessage() throws IOException , ClassNotFoundException {
+        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("rajesh", "Hello Raj")));
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
     }
 
     public void changeChatName() throws IOException, ClassNotFoundException {
