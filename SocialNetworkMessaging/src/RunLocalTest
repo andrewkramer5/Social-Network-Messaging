@@ -12,9 +12,8 @@ public class RunLocalTest {
         if (result.wasSuccessful()) {
             System.out.println("Excellent - Test ran successfully");
         } else {
-            for (Failure failure : result.getFailures()) {
-                System.out.println(failure.toString());
-            }
-
+        	for (Failure failure : result.getFailures()) {
+            	System.out.println(failure.toString());
+        	}
         }
-        public class ClientTest
+    }
