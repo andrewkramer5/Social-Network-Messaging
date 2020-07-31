@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -92,15 +93,26 @@ public class ClientLoginGUI extends JPanel {
 		c.insets = new Insets(10, 10, 10, 10);
 		loginButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				//TODO check if fields are empty
-				//TODO send login packet to the server
-				//TODO receive verify packet from the server
-				//TODO if packet.isVerified() == false, then use JOptionPane to display error
-				//TODO set logged in user
-				client.setLoggedInUser(new User(handleField.getText(), passwordField.getText()));
-				client.setPanel(client.PANEL_CHOICES[1]);
-				client.getClientChatListGUI().update();
+			public void actionPerformed(ActionEvent e) {
+				if (oneFieldEmpty()) {
+					JOptionPane.showMessageDialog(null, "One of the fields is empty!", 
+		    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					//TODO send login packet to the server
+					//TODO receive verify packet from the server
+					
+					/*
+					if (packet.isVerified()) {
+						//TODO get user from server
+						//TODO set loggedInUser to user from server
+						
+						client.setLoggedInUser(new User(handleField.getText(), passwordField.getText()));
+						client.setPanel(client.PANEL_CHOICES[1]);
+					} else {
+						JOptionPane.showMessageDialog(null, packet.getDescription(), 
+			    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+					}*/
+				}
 			}
 		});
 		this.add(loginButton, c);
@@ -110,12 +122,21 @@ public class ClientLoginGUI extends JPanel {
 		c.gridy = 5;
 		makeAccountButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				//TODO check if fields are empty
-				//TODO display JOptionPanes
-				//TODO send add user packet to the server
-				//TODO receive verify packet from the server
-				//TODO if packet.isVerified() == false, then use JOptionPane to display error
+			public void actionPerformed(ActionEvent e) {
+				if (oneFieldEmpty()) {
+					JOptionPane.showMessageDialog(null, "One of the fields is empty!", 
+		    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					//TODO send add user packet to the server
+					//TODO receive verify packet from the server
+					
+					/*
+					if (!packet.isVerified()) {
+						JOptionPane.showMessageDialog(null, packet.getDescription(), 
+			    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+					}
+					*/
+				}
 			}
 		});
 		this.add(makeAccountButton, c);
@@ -132,5 +153,9 @@ public class ClientLoginGUI extends JPanel {
 	public void clearFields() {
 		this.handleField.setText("");
 		this.passwordField.setText("");
+	}
+	
+	public boolean oneFieldEmpty() {
+		return this.handleField.getText().equals("") || this.passwordField.getText().equals("");
 	}
 }
