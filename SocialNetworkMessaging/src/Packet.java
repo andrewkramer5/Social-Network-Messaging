@@ -37,6 +37,7 @@ public class Packet implements Serializable {
 	 * changePassword(option = password), a user's password
 	 * addFriend		(option = friendHandle), handle of a new friend
 	 * changeHandle  (option = newHandle), updated handle of user
+	 * removeFriend	 (option = friendHandle), handle of friend to be removed
      * 
      * @param String identifier, the name of the method to be called in server
      * 
@@ -57,7 +58,7 @@ public class Packet implements Serializable {
     		
     		this.password = option;
     		
-    	} else if (identifier.equals("addFriend")) {
+    	} else if (identifier.equals("addFriend") || identifier.equals("removeFriend")) {
     		this.friendHandle = option;
     	} else if (identifier.equals("changeHandle")) {
     		this.newHandle = option;
