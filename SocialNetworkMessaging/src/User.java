@@ -91,12 +91,14 @@ public class User implements Serializable {
     /*
      * Remove a friend from the user's friend list
      */
-    public void removeFriend(User u) {
+    public boolean removeFriend(User u) {
         for (User friend : friends) {
         	if (friend.getHandle().equals(u.getHandle())) {
-        		friends.remove(u);
+        		friends.remove(friend);
+        		return true;
         	} // end if
         }  // end for
+        return true;
     } // removeFriend
     
     /*
