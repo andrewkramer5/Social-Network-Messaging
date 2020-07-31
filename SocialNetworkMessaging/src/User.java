@@ -36,6 +36,13 @@ public class User implements Serializable {
         chats = new ArrayList<>();
         numFriends = 0;
     } // User
+    
+    /*
+     * empty constructor
+     */
+    public User() {
+    	
+    } // User
 
     public String getHandle() {
         return handle;
