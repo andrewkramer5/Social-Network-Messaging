@@ -34,6 +34,7 @@ public class ClientApplication {
 	
 	private Client client;
 	private User loggedInUser;
+	private Chat selectedChat;
 	
 	public ClientApplication() {
 		this.client = null;
@@ -43,7 +44,19 @@ public class ClientApplication {
 	public static void main(String[] args) throws IOException {
 		
 		ClientApplication app = new ClientApplication();
+		
+		//testing
 		app.setLoggedInUser(new User("", ""));
+		app.loggedInUser.addFriend(new User("Raj", "1234"));
+		app.loggedInUser.addFriend(new User("Evan", "5678"));
+		app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "CS Project Chat"));
+		app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #1"));
+		app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #2"));
+		app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #3"));
+		app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #4"));
+		app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #5"));
+		app.loggedInUser.getChats().get(0).addMessage(new Message("Raj", "Hello guys"));
+		//end testing
     	
     	SwingUtilities.invokeLater(new Runnable()
         {
@@ -52,6 +65,8 @@ public class ClientApplication {
             	app.displayGUI();
             }
         });
+    	
+    	app.setPanel(app.PANEL_CHOICES[1]);
     	
     	try {
     		Client client = new Client(new Socket("127.0.0.1", 4200));
@@ -100,11 +115,13 @@ public class ClientApplication {
 				CardLayout cardLayout = (CardLayout) contentPane.getLayout();
                 cardLayout.show(contentPane, panelName);
                 
-                //TODO when switching panels clear the data from previous panel
+                //TODO when switching panels clear the data and update
                 if (panelName.equals(PANEL_CHOICES[0])) {
                 	clientLoginPanel.clearFields();
+                	clientLoginPanel.update();
                 } else if (panelName.equals(PANEL_CHOICES[1])) {
-                	
+                	clientChatListPanel.update();
+                	clientChatListPanel.updateChats();
                 } else if (panelName.equals(PANEL_CHOICES[2])) {
                 	
                 }
@@ -130,5 +147,17 @@ public class ClientApplication {
 	
 	public ClientChatListGUI getClientChatListGUI() {
 		return this.clientChatListPanel;
+	}
+	
+	public JFrame getFrame() {
+		return this.frame;
+	}
+	
+	public Chat getSelectedChat() {
+		return this.selectedChat;
+	}
+	
+	public void setSelectedChat(Chat selectedChat) {
+		this.selectedChat = selectedChat;
 	}
 }
