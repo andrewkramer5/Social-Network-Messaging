@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -28,7 +29,7 @@ import java.net.*;
  *
  * @author Andrew Kramer
  *
- * @version July 31, 2020
+ * @version August 1, 2020
  *
  */
 public class ClientChatListGUI extends JPanel {
@@ -36,7 +37,7 @@ public class ClientChatListGUI extends JPanel {
     public final int WINDOW_WIDTH;
     public final int WINDOW_HEIGHT;
 
-    ClientApplication client;
+    ClientApplication app;
     private int numChats;
     private int numFriends;
 
@@ -61,12 +62,12 @@ public class ClientChatListGUI extends JPanel {
     JScrollPane friendListScrollPane;
     JPanel friendListContainer;
 
-    public ClientChatListGUI(ClientApplication client) {
-        this.numFriends = client.getLoggedInUser().getFriends().size();
-        this.numChats = client.getLoggedInUser().getChats().size();
-        this.client = client;
-        this.WINDOW_WIDTH = client.WINDOW_WIDTH;
-        this.WINDOW_HEIGHT = client.WINDOW_HEIGHT;
+    public ClientChatListGUI(ClientApplication app) {
+        this.numFriends = app.getLoggedInUser().getFriends().size();
+        this.numChats = app.getLoggedInUser().getChats().size();
+        this.app = app;
+        this.WINDOW_WIDTH = app.WINDOW_WIDTH;
+        this.WINDOW_HEIGHT = app.WINDOW_HEIGHT;
 
         //Account Info Panel
         accountInfoPanel = new JPanel();
@@ -84,7 +85,7 @@ public class ClientChatListGUI extends JPanel {
         changeUsernameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newHandle = JOptionPane.showInputDialog(client.getFrame(), "Please enter a new username",
+                String newHandle = JOptionPane.showInputDialog(app.getFrame(), "Please enter a new username",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (newHandle != null) {
                     if (!newHandle.equals("")) {
@@ -93,14 +94,14 @@ public class ClientChatListGUI extends JPanel {
                         try {
                             Socket s = new Socket("localhost", 4200);
                             Client c = new Client(s);
-                            c.sendPacket(new Packet("newHandle", client.getLoggedInUser().getHandle(),
+                            c.sendPacket(new Packet("newHandle", app.getLoggedInUser().getHandle(),
                                     newHandle));
                             Packet p = c.receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
                                 c.sendPacket(new Packet("update", newHandle));
-                                client.setLoggedInUser(c.receiveUser());
+                                app.setLoggedInUser(c.receiveUser());
                             }
                             else {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -136,7 +137,7 @@ public class ClientChatListGUI extends JPanel {
         changePasswordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newPassword = JOptionPane.showInputDialog(client.getFrame(), "Please enter a new password",
+                String newPassword = JOptionPane.showInputDialog(app.getFrame(), "Please enter a new password",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (newPassword != null) {
                     if (!newPassword.isEmpty()) {
@@ -145,14 +146,14 @@ public class ClientChatListGUI extends JPanel {
                         try {
                             Socket s = new Socket("localhost", 4200);
                             Client c = new Client(s);
-                            c.sendPacket(new Packet("changePassword", client.getLoggedInUser().getHandle(),
+                            c.sendPacket(new Packet("changePassword", app.getLoggedInUser().getHandle(),
                                     newPassword));
                             Packet p = c.receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", client.getLoggedInUser().getHandle()));
-                                client.setLoggedInUser(c.receiveUser());
+                                c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                                app.setLoggedInUser(c.receiveUser());
                             }
                         }
                         catch (Exception ex) {
@@ -183,7 +184,7 @@ public class ClientChatListGUI extends JPanel {
         addFriendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String friendHandle = JOptionPane.showInputDialog(client.getFrame(), "Please enter a username of a friend to add",
+                String friendHandle = JOptionPane.showInputDialog(app.getFrame(), "Please enter a username of a friend to add",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (friendHandle != null) {
                     if (!friendHandle.equals("")) {
@@ -192,14 +193,14 @@ public class ClientChatListGUI extends JPanel {
                         try {
                             Socket s = new Socket("localhost", 4200);
                             Client c = new Client(s);
-                            c.sendPacket(new Packet("addFriend", client.getLoggedInUser().getHandle(),
+                            c.sendPacket(new Packet("addFriend", app.getLoggedInUser().getHandle(),
                                     friendHandle));
                             Packet p = c.receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", client.getLoggedInUser().getHandle()));
-                                client.setLoggedInUser(c.receiveUser());
+                                c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                                app.setLoggedInUser(c.receiveUser());
 
                             }
                             else {
@@ -236,7 +237,7 @@ public class ClientChatListGUI extends JPanel {
         removeFriendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String friendHandle = JOptionPane.showInputDialog(client.getFrame(), "Please enter a username of a friend to remove",
+                String friendHandle = JOptionPane.showInputDialog(app.getFrame(), "Please enter a username of a friend to remove",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (friendHandle != null) {
                     if (!friendHandle.equals("")) {
@@ -245,13 +246,13 @@ public class ClientChatListGUI extends JPanel {
                         try {
                             Socket s = new Socket("localhost", 4200);
                             Client c = new Client(s);
-                            c.sendPacket(new Packet("removeFriend", client.getLoggedInUser().getHandle(),friendHandle));
+                            c.sendPacket(new Packet("removeFriend", app.getLoggedInUser().getHandle(),friendHandle));
                             Packet p = c.receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", client.getLoggedInUser().getHandle()));
-                                client.setLoggedInUser(c.receiveUser());
+                                c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                                app.setLoggedInUser(c.receiveUser());
                             }
                             else {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -287,8 +288,8 @@ public class ClientChatListGUI extends JPanel {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                client.setPanel(client.PANEL_CHOICES[0]);
-                client.setLoggedInUser(new User("", ""));
+                app.setPanel(app.PANEL_CHOICES[0]);
+                app.setLoggedInUser(new User("", ""));
             }
         });
         accountInfoPanel.add(logoutButton);
@@ -297,13 +298,13 @@ public class ClientChatListGUI extends JPanel {
         deleteAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int option = JOptionPane.showConfirmDialog(client.getFrame(), "Are you sure you want to delete your account?",
+                int option = JOptionPane.showConfirmDialog(app.getFrame(), "Are you sure you want to delete your account?",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
                     //TODO send delete account packet to server with loggedInUser.getHandle()
 
-                    client.setPanel(client.PANEL_CHOICES[0]);
-                    client.setLoggedInUser(new User("", ""));
+                    app.setPanel(app.PANEL_CHOICES[0]);
+                    app.setLoggedInUser(new User("", ""));
                 }
             }
         });
@@ -327,7 +328,7 @@ public class ClientChatListGUI extends JPanel {
         addChatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String chatName = JOptionPane.showInputDialog(client.getFrame(), "Please enter a name for the new chat",
+                String chatName = JOptionPane.showInputDialog(app.getFrame(), "Please enter a name for the new chat",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (chatName != null) {
                     if (!chatName.equals("")) {
@@ -336,13 +337,13 @@ public class ClientChatListGUI extends JPanel {
                         boolean cancelled = false;
 
                         do {
-                            String friendHandle = JOptionPane.showInputDialog(client.getFrame(),
+                            String friendHandle = JOptionPane.showInputDialog(app.getFrame(),
                                     "Please enter a name of a friend to add to the new chat",
                                     "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                             if (friendHandle != null) {
                                 if (!friendHandle.equals("")) {
                                     handlesList.add(friendHandle);
-                                    int selected = JOptionPane.showConfirmDialog(client.getFrame(),
+                                    int selected = JOptionPane.showConfirmDialog(app.getFrame(),
                                             "Would you like to add another friend?",
                                             "WSC Messenger", JOptionPane.YES_NO_OPTION);
                                     if (selected == JOptionPane.NO_OPTION) {
@@ -372,8 +373,8 @@ public class ClientChatListGUI extends JPanel {
                                 if(p.isVerified()) {
                                     JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                    c.sendUser(client.getLoggedInUser());
-                                    client.setLoggedInUser(c.receiveUser());
+                                    c.sendUser(app.getLoggedInUser());
+                                    app.setLoggedInUser(c.receiveUser());
                                 }
                                 else {
                                     JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -436,28 +437,25 @@ public class ClientChatListGUI extends JPanel {
         {
             public void run()
             {
-                usernameLabel.setText(client.getLoggedInUser().getHandle());
-                try {
-                    Socket s = new Socket("localhost", 4200);
-                    Client c = new Client(s);
-                    c.sendPacket(new Packet("update", client.getLoggedInUser().getHandle()));
-                    client.setLoggedInUser(c.receiveUser());
-                }
-                catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Unable to connect to server!",
-                            "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-                }
-                //TODO display user's current friends
+                usernameLabel.setText(app.getLoggedInUser().getHandle());
             }
         });
+        
+        /*
+        try {
+			app.getClient().sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+			Packet p = app.getClient().receivePacket();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 
-        numFriends = client.getLoggedInUser().getFriends().size();
+        numFriends = app.getLoggedInUser().getFriends().size();
         friendListContainer = new JPanel();
         friendListContainer.setLayout(new GridLayout(numFriends, 1, 0, 5));
         friendListScrollPane = new JScrollPane(friendListContainer);
         friendListPanel.add(friendListScrollPane, BorderLayout.CENTER);
 
-        for (User u : client.getLoggedInUser().getFriends()) {
+        for (User u : app.getLoggedInUser().getFriends()) {
             //System.out.println("Adding chats");
             JLabel l = new JLabel(u.getHandle());
             l.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
@@ -473,14 +471,14 @@ public class ClientChatListGUI extends JPanel {
         {
             public void run()
             {
-            	numChats = client.getLoggedInUser().getChats().size();
+            	numChats = app.getLoggedInUser().getChats().size();
         		chatListContainer = new JPanel();
         		chatListContainer.setLayout(new GridLayout(numChats, 1, 0, 0));
         		chatListContainer.setPreferredSize(new Dimension(50, numChats * 100));
         		chatListScrollPane = new JScrollPane(chatListContainer);
         		chatListPanel.add(chatListScrollPane, BorderLayout.CENTER);
 
-            	for (Chat c : client.getLoggedInUser().getChats()) {
+            	for (Chat c : app.getLoggedInUser().getChats()) {
             		System.out.println("Adding chats");
             		chatListContainer.add(new ChatPanel(c));
             	}
@@ -488,24 +486,23 @@ public class ClientChatListGUI extends JPanel {
         });
         */
 
-        numChats = client.getLoggedInUser().getChats().size();
+        numChats = app.getLoggedInUser().getChats().size();
         chatListContainer = new JPanel();
         chatListContainer.setLayout(new GridLayout(numChats, 1, 0, 0));
         chatListContainer.setPreferredSize(new Dimension(50, numChats * 100));
         chatListScrollPane = new JScrollPane(chatListContainer);
         chatListPanel.add(chatListScrollPane, BorderLayout.CENTER);
 
-        for (Chat c : client.getLoggedInUser().getChats()) {
+        for (Chat c : app.getLoggedInUser().getChats()) {
             //System.out.println("Adding chats");
             chatListContainer.add(new ChatPanel(c));
         }
     }
 
     public void chatClicked(Chat chat) {
-        //TODO switch to Client Chat GUI
-        client.setSelectedChat(chat);
-
-        System.out.println(chat.getChatName());
+        app.setSelectedChat(chat);
+        app.setPanel(app.PANEL_CHOICES[2]);
+        //System.out.println(chat.getChatName());
     }
 
     class ChatPanel extends JPanel {
@@ -583,6 +580,7 @@ public class ClientChatListGUI extends JPanel {
                 public void mouseReleased(MouseEvent e) {}
             });
         }
+        
         public class CheckUpdate implements Runnable {
             //I have to figure out how to implement this with the rest of the class
             //instantiate like this
@@ -595,7 +593,7 @@ public class ClientChatListGUI extends JPanel {
                     Client c = new Client(new Socket("localhost",4200));
                     while(true) {
                         // c.sendPacket(new Packet("update"));
-                        client.setLoggedInUser(c.receiveUser());
+                        app.setLoggedInUser(c.receiveUser());
                     }
                 }
                 catch (Exception e) {

@@ -1,4 +1,3 @@
-import jdk.jshell.spi.ExecutionControlProvider;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -22,7 +21,7 @@ import java.net.*;
  *
  * @author Andrew Kramer 
  *
- * @version July 27, 2020
+ * @version August 1, 2020
  *
  */
 public class ClientLoginGUI extends JPanel {
@@ -30,6 +29,7 @@ public class ClientLoginGUI extends JPanel {
     public final int WINDOW_WIDTH;
     public final int WINDOW_HEIGHT;
 
+    ClientApplication app;
     JLabel titleLabel;
     JLabel handleLabel;
     JLabel passwordLabel;
@@ -38,10 +38,10 @@ public class ClientLoginGUI extends JPanel {
     JButton loginButton;
     JButton makeAccountButton;
 
-    public ClientLoginGUI(ClientApplication client) {
+    public ClientLoginGUI(ClientApplication app) {
 
-        this.WINDOW_WIDTH = client.WINDOW_WIDTH;
-        this.WINDOW_HEIGHT = client.WINDOW_HEIGHT;
+        this.WINDOW_WIDTH = app.WINDOW_WIDTH;
+        this.WINDOW_HEIGHT = app.WINDOW_HEIGHT;
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -105,12 +105,12 @@ public class ClientLoginGUI extends JPanel {
                     try {
                         Socket s = new Socket("localhost", 4200);
                         Client c = new Client(s);
-                        c.sendPacket(new Packet("signIn", client.getLoggedInUser().getHandle(),
-                                client.getLoggedInUser().getPassword()));
+                        c.sendPacket(new Packet("signIn", app.getLoggedInUser().getHandle(),
+                                app.getLoggedInUser().getPassword()));
                         Packet p = c.receivePacket();
                         if(p.isVerified()) {
-                            c.sendPacket(new Packet("update", client.getLoggedInUser().getHandle()));
-                            client.setLoggedInUser(c.receiveUser());
+                            c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                            app.setLoggedInUser(c.receiveUser());
                         }
                         else {
                             JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -127,8 +127,8 @@ public class ClientLoginGUI extends JPanel {
 						//TODO get user from server
 						//TODO set loggedInUser to user from server
 
-						client.setLoggedInUser(new User(handleField.getText(), passwordField.getText()));
-						client.setPanel(client.PANEL_CHOICES[1]);
+						app.setLoggedInUser(new User(handleField.getText(), passwordField.getText()));
+						app.setPanel(app.PANEL_CHOICES[1]);
 					} else {
 						JOptionPane.showMessageDialog(null, packet.getDescription(),
 			    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
@@ -153,8 +153,8 @@ public class ClientLoginGUI extends JPanel {
                     try {
                         Socket s = new Socket("localhost", 4200);
                         Client c = new Client(s);
-                        c.sendPacket(new Packet("addUser", client.getLoggedInUser().getHandle(),
-                                client.getLoggedInUser().getPassword()));
+                        c.sendPacket(new Packet("addUser", app.getLoggedInUser().getHandle(),
+                                app.getLoggedInUser().getPassword()));
                         Packet p = c.receivePacket();
                         if(!p.isVerified()) {
                             JOptionPane.showMessageDialog(null, p.getDescription(),
