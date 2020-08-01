@@ -598,5 +598,20 @@ public class Test {
 
     }
 
+//    public class Server {
+//    }
 
+    public class Client {
+        @Test(timeout = 1000)
+        public void receivePacket() throws IOException, ClassNotFoundException {
+            Client client = new Client();
+            String a = "addUser", "ehendrich", "broccoli11";
+            assertEquals(a, client.receivePacket());
+        }
+
+        public void receiveUser() throws IOException, ClassNotFoundException {
+            Client client = new Client();
+            assertEquals("update", client.receiveUser());
+        }
+    }
 }

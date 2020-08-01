@@ -196,7 +196,7 @@ public class Test {
     }
 
     public void addDirectMessageWithoutName() throws IOException, ClassNotFoundException {
-        Packet p = new Packet("addChat", new String[] {"ehendrich", "raj_the_baller"},
+        Packet p = new Packet("addChat", new String[]{"ehendrich", "raj_the_baller"},
                 "");
 
         c.sendPacket(p);
@@ -215,7 +215,7 @@ public class Test {
     }
 
     public void addDirectMessageWithName() throws IOException, ClassNotFoundException {
-        Packet p = new Packet("addChat", new String[] {"ehendrich", "raj_the_baller"},
+        Packet p = new Packet("addChat", new String[]{"ehendrich", "raj_the_baller"},
                 "Coding buds");
 
         c.sendPacket(p);
@@ -237,7 +237,7 @@ public class Test {
 
 
     public void addChatWithAlreadyExistingDefaultName() throws IOException, ClassNotFoundException {
-        Packet p = new Packet("addChat", new String[] {"ehendrich", "raj_the_baller"},
+        Packet p = new Packet("addChat", new String[]{"ehendrich", "raj_the_baller"},
                 "");
 
         c.sendPacket(p);
@@ -256,7 +256,7 @@ public class Test {
     }
 
     public void addChatWithAlreadyExistingCustomName() throws IOException, ClassNotFoundException {
-        Packet p = new Packet("addChat", new String[] {"ehendrich", "raj_the_baller"},
+        Packet p = new Packet("addChat", new String[]{"ehendrich", "raj_the_baller"},
                 "Coding buds");
 
         c.sendPacket(p);
@@ -375,8 +375,8 @@ public class Test {
         System.out.println();
     }
 
-    public void changeHandles() throws IOException , ClassNotFoundException{
-        c.sendPacket(new Packet("changeHandle","ehendrich","rajesh"));
+    public void changeHandles() throws IOException, ClassNotFoundException {
+        c.sendPacket(new Packet("changeHandle", "ehendrich", "rajesh"));
         Packet p = c.receivePacket();
         System.out.println("attempted to change handle");
         System.out.println(p.isVerified());
@@ -388,7 +388,7 @@ public class Test {
         System.out.println("chat deleted");
     }
 
-    public void deleteUser() throws IOException{
+    public void deleteUser() throws IOException {
         c.sendPacket(new Packet("deleteUser", "raj_the_baller"));
     }
 
@@ -545,58 +545,82 @@ public class Test {
             assertNotNull(packet.getFriendHandle());
         }
     }
-        public class UserTest {
-            @Test(timeout = 1000)
-            public void getHandle() {
-                User user = new User();
-                assertEquals("rajesh", user.getNewHandle());
-            }
-            @Test(timeout = 1000)
-            public void getPassword() {
-                User user = new User();
-                assertEquals("ehendrich", user.getPassword());
-            }
-            @Test(timeout = 1000)
-            public void getFriends() {
-                User user = new User();
-                assertEquals("raj_the_baller", user.getFriends());
-            }
-            @Test(timeout = 1000)
-            public void getChats() {
-                User user = new User();
-                assertEquals("Chats:", user.getChats());
-            }
-        }
-        public class Message {
-            @Test(timeout = 1000)
-            public void getHandle() {
-                Message message = new Message();
-                assertEquals("rajesh", message.getNewHandle());
-            }
-            @Test(timeout = 1000)
-            public void getContent() {
-                User user = new User();
-                assertNotNull(message.getContent());
-            }
-        }
-        public class Chat {
-            @Test(timeout = 1000)
-            public void getChatContent() {
-                Chat chat = new Chat();
-                assertEquals(a + ". " + chat.getChatName(), chat.getChatContent());
-            }
-            @Test(timeout = 1000)
-            public void getChatMembers() {
-                Chat chat = new Chat();
-                assertNotNull(chat.getChatMembers());
-            }
-            @Test(timeout = 1000)
-            public void getChatName() {
-                Chat chat = new Chat();
-                assertEquals("rajesh", chat.getChatName());
-            }
 
+    public class UserTest {
+        @Test(timeout = 1000)
+        public void getHandle() {
+            User user = new User();
+            assertEquals("rajesh", user.getNewHandle());
         }
 
+        @Test(timeout = 1000)
+        public void getPassword() {
+            User user = new User();
+            assertEquals("ehendrich", user.getPassword());
+        }
 
+        @Test(timeout = 1000)
+        public void getFriends() {
+            User user = new User();
+            assertEquals("raj_the_baller", user.getFriends());
+        }
+
+        @Test(timeout = 1000)
+        public void getChats() {
+            User user = new User();
+            assertEquals("Chats:", user.getChats());
+        }
+    }
+
+    public class Message {
+        @Test(timeout = 1000)
+        public void getHandle() {
+            Message message = new Message();
+            assertEquals("rajesh", message.getNewHandle());
+        }
+
+        @Test(timeout = 1000)
+        public void getContent() {
+            User user = new User();
+            assertNotNull(message.getContent());
+        }
+    }
+
+    public class Chat {
+        @Test(timeout = 1000)
+        public void getChatContent() {
+            Chat chat = new Chat();
+            assertEquals(a + ". " + chat.getChatName(), chat.getChatContent());
+        }
+
+        @Test(timeout = 1000)
+        public void getChatMembers() {
+            Chat chat = new Chat();
+            assertNotNull(chat.getChatMembers());
+        }
+
+        @Test(timeout = 1000)
+        public void getChatName() {
+            Chat chat = new Chat();
+            assertEquals("rajesh", chat.getChatName());
+        }
+
+    }
+
+//    public class Server {
+//    }
+
+    public class Client {
+        @Test(timeout = 1000)
+        public void receivePacket() throws IOException, ClassNotFoundException {
+            Client client = new Client();
+            String a = "addUser", "ehendrich", "broccoli11";
+            assertEquals(a, client.receivePacket());
+        }
+
+        public void receiveUser() throws IOException, ClassNotFoundException {
+            Client client = new Client();
+            assertEquals("update", client.receiveUser());
+        }
+    }
 }
