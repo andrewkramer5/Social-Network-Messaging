@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class Test {
     String tempHandle;
@@ -454,4 +456,11 @@ public class Test {
         System.out.println();
 
     }
+
+    public class ChatTest {
+        @Test(timeout = 1000)
+        public void testSum() {
+            Chat chat = new Chat();
+
+        }
 }
