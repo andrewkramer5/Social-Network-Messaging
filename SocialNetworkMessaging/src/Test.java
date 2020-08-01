@@ -1,5 +1,10 @@
 import java.io.*;
 import java.net.*;
+import org.junit.Test;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.rules.Timeout;
 
 public class Test {
     String tempHandle;
@@ -39,7 +44,7 @@ public class Test {
 
         t.signInWithIncorrectPassword();
 
-        //t.showData("ehendrich");
+        t.showData("ehendrich");
 
         //for some reason this method (as well as addMessage) do not instantly
         //update on the server. However, if you run the Test class again, it works
@@ -48,7 +53,7 @@ public class Test {
         //but right now I don't get why its happening.
         t.changePassword();
 
-        //t.showData("ehendrich");
+        t.showData("ehendrich");
 
         t.addMessageFromFirstUser();
 
@@ -64,28 +69,23 @@ public class Test {
 
         t.editChat();
 
-        //t.showData("raj_the_baller");
+        t.showData("raj_the_baller");
 
         t.deleteMessage();
 
         t.showData("rajesh");
 
         t.changeChatName();
-//
+
         t.showData("rajesh");
-//
+
         t.deleteChat();
-//
-//        //t.showData("raj_the_baller");
-//
+
+        t.showData("raj_the_baller");
+
         t.deleteUser();
 
         t.showData("rajesh");
-        
-        c.sendPacket(new Packet("end", "now"));
-        
-        s.close();
-        
 
     }
 
@@ -330,10 +330,6 @@ public class Test {
 
         c.sendPacket(p);
 
-        Packet verify = c.receivePacket();  
-        
-        System.out.println(verify.getDescription());      
-
         System.out.println("Attempt to change password to newPassword");
 
         System.out.println();
@@ -343,10 +339,6 @@ public class Test {
         Packet p = new Packet("addMessage", "Coding buds", new Message("ehendrich", "Hello Raj"));
 
         c.sendPacket(p);
-
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
 
         System.out.println("Attempt to send message from ehendrich");
 
@@ -358,10 +350,6 @@ public class Test {
 
         c.sendPacket(p);
 
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
-
         System.out.println("Attempt to send message from raj_the_baller");
 
         System.out.println();
@@ -371,10 +359,6 @@ public class Test {
         Packet p = new Packet("addMessage", "ehendrich, raj_the_baller", new Message("ehendrich", "How are you?"));
 
         c.sendPacket(p);
-
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
 
         System.out.println("Attempt to send another message from ehendrich");
 
@@ -386,16 +370,12 @@ public class Test {
 
         c.sendPacket(p);
 
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
-
         System.out.println("Attempt to send another message from raj_the_baller");
 
         System.out.println();
     }
 
-    public void changeHandles() throws IOException , ClassNotFoundException {
+    public void changeHandles() throws IOException , ClassNotFoundException{
         c.sendPacket(new Packet("changeHandle","ehendrich","rajesh"));
         Packet p = c.receivePacket();
         System.out.println("attempted to change handle");
@@ -403,44 +383,23 @@ public class Test {
         System.out.println();
     }
 
-    public void deleteChat() throws IOException , ClassNotFoundException {
-        c.sendPacket(new Packet("deleteChat", "rajesh", "Mad Lads"));
-
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
-        
+    public void deleteChat() throws IOException {
+        c.sendPacket(new Packet("deleteChat", "Mad Lads"));
         System.out.println("chat deleted");
     }
 
-    public void deleteUser() throws IOException , ClassNotFoundException {
+    public void deleteUser() throws IOException{
         c.sendPacket(new Packet("deleteUser", "raj_the_baller"));
-
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
     }
 
-    public void editChat() throws IOException , ClassNotFoundException {
-    	Packet p = new Packet("editMessage", "rajesh, raj_the_baller", new Message("rajesh", "How are you?"), 
-    			new Message("rajesh", "foo bar"));
-    	
-        c.sendPacket(p);
-
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
-        
-        System.out.println("packet sent");
+    public void editChat() throws IOException {
+        c.sendPacket(new Packet("editMessage", new Message("ehendrich", "How are you?"),
+                new Message("ehendrich", "foo bar")));
 
     }
 
-    public void deleteMessage() throws IOException , ClassNotFoundException {
-        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("rajesh", "Hello Raj")));
-
-        Packet verify = c.receivePacket();
-        
-        System.out.println(verify.getDescription());
+    public void deleteMessage() throws IOException {
+        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("ehendrich", "How are you?")));
     }
 
     public void changeChatName() throws IOException, ClassNotFoundException {
@@ -481,7 +440,7 @@ public class Test {
 
         System.out.println("Chats:");
         int a = 1;
-        //System.out.println(u.getChats().get(0).getChatContent().size());
+        System.out.println(u.getChats().get(0).getChatContent().size());
 //        System.out.println(u.getChats().get(1).getChatContent().size());
 
         for (Chat chat : u.getChats()) {
@@ -501,5 +460,143 @@ public class Test {
 
     }
 
+    public static void main(String[] args) {
+        Result result = JUnitCore.runClasses(TestCase.class);
+        if (result.wasSuccessful()) {
+            System.out.println("Excellent - Test ran successfully");
+        } else {
+            for (Failure failure : result.getFailures()) {
+                System.out.println(failure.toString());
+            }
+        }
     }
+
+    public class PacketTest {
+        @Test(timeout = 1000)
+        public void getIdentifier() {
+            Packet packet = new Packet();
+            assertNotnull(getIdentifier());
+        }
+
+        @Test(timeout = 1000)
+        public void getHandle() {
+            Packet packet = new Packet();
+            assertEquals("abc", packet.getHandle());
+        }
+
+        @Test(timeout = 1000)
+        public void getNewHandle() {
+            Packet packet = new Packet();
+            assertEquals("rajesh", packet.getNewHandle());
+        }
+
+        @Test(timeout = 1000)
+        public void getPassword() {
+            Packet packet = new Packet();
+            assertEquals("ehendrich", packet.getPassword());
+        }
+
+        @Test(timeout = 1000)
+        public void getChatName() {
+            Packet packet = new Packet();
+            assertEquals("raj_the_baller", packet.getChatName());
+        }
+
+        @Test(timeout = 1000)
+        public void getNewChatName() {
+            Packet packet = new Packet();
+            assertEquals("rajesh", packet.getChatName());
+        }
+
+        @Test(timeout = 1000)
+        public void getMessage() {
+            Packet packet = new Packet();
+            assertEquals("Hello Evan", packet.getMessage());
+        }
+
+        @Test(timeout = 1000)
+        public void getOldMessage() {
+            Packet packet = new Packet();
+            assertEquals("Hello Raj", packet.getOldMessage());
+        }
+
+        @Test(timeout = 1000)
+        public void getHandles() {
+            Packet packet = new Packet();
+            assertEquals("ehendrich", packet.getHandles());
+        }
+
+        @Test(timeout = 1000)
+        public void isVerified() {
+            Packet packet = new Packet();
+            assertEquals("ehendrich", packet.isVerified());
+            assertEquals("rajesh", packet.isVerified());
+        }
+
+        @Test(timeout = 1000)
+        public void getDescription() {
+            Packet packet = new Packet();
+            assertNotNull(packet.getDescription());
+        }
+
+        @Test(timeout = 1000)
+        public void getFriendHandle() {
+            Packet packet = new Packet();
+            assertNotNull(packet.getFriendHandle());
+        }
+    }
+    public class UserTest {
+        @Test(timeout = 1000)
+        public void getHandle() {
+            User user = new User();
+            assertEquals("rajesh", user.getNewHandle());
+        }
+        @Test(timeout = 1000)
+        public void getPassword() {
+            User user = new User();
+            assertEquals("ehendrich", user.getPassword());
+        }
+        @Test(timeout = 1000)
+        public void getFriends() {
+            User user = new User();
+            assertEquals("raj_the_baller", user.getFriends());
+        }
+        @Test(timeout = 1000)
+        public void getChats() {
+            User user = new User();
+            assertEquals("Chats:", user.getChats());
+        }
+    }
+    public class Message {
+        @Test(timeout = 1000)
+        public void getHandle() {
+            Message message = new Message();
+            assertEquals("rajesh", message.getNewHandle());
+        }
+        @Test(timeout = 1000)
+        public void getContent() {
+            User user = new User();
+            assertNotNull(message.getContent());
+        }
+    }
+    public class Chat {
+        @Test(timeout = 1000)
+        public void getChatContent() {
+            Chat chat = new Chat();
+            assertEquals(a + ". " + chat.getChatName(), chat.getChatContent());
+        }
+        @Test(timeout = 1000)
+        public void getChatMembers() {
+            Chat chat = new Chat();
+            assertNotNull(chat.getChatMembers());
+        }
+        @Test(timeout = 1000)
+        public void getChatName() {
+            Chat chat = new Chat();
+            assertEquals("rajesh", chat.getChatName());
+        }
+
+    }
+
+
 }
