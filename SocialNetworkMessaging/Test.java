@@ -520,5 +520,13 @@ public class Test {
             assertNotNull(packet.getFriendHandle());
         }
 
+        public class UserTest {
+            @Test(timeout = 1000)
+            public void getHandle() {
+                User user = new User();
+                assertEquals("rajesh", packet.getNewHandle());
+            }
+        }
+
     }
 }
