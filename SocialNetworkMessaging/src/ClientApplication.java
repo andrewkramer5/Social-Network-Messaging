@@ -31,6 +31,7 @@ public class ClientApplication {
     private JPanel contentPane;
     private ClientLoginGUI clientLoginPanel;
     private ClientChatListGUI clientChatListPanel;
+    private ClientChatGUI clientChatPanel;
 
     private Client client;
     private User loggedInUser;
@@ -46,7 +47,7 @@ public class ClientApplication {
         ClientApplication app = new ClientApplication();
 
         //testing
-        app.setLoggedInUser(new User("", ""));
+        app.setLoggedInUser(new User("Andrew", ""));
         app.loggedInUser.addFriend(new User("Raj", "1234"));
         app.loggedInUser.addFriend(new User("Evan", "5678"));
         app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "CS Project Chat"));
@@ -56,6 +57,7 @@ public class ClientApplication {
         app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #4"));
         app.loggedInUser.addChat(new Chat(app.loggedInUser.getFriends(), "Group Chat #5"));
         app.loggedInUser.getChats().get(0).addMessage(new Message("Raj", "Hello guys"));
+        app.loggedInUser.getChats().get(0).addMessage(new Message("Andrew", "Hello back"));
         //end testing
 
         SwingUtilities.invokeLater(new Runnable()
@@ -66,7 +68,8 @@ public class ClientApplication {
             }
         });
 
-        app.setPanel(app.PANEL_CHOICES[1]);
+        app.selectedChat = app.loggedInUser.getChats().get(0);
+        app.setPanel(app.PANEL_CHOICES[2]);
 
         try {
             Client client = new Client(new Socket("127.0.0.1", 4200));
@@ -93,6 +96,8 @@ public class ClientApplication {
         contentPane.add(clientLoginPanel, this.PANEL_CHOICES[0]);
         clientChatListPanel = new ClientChatListGUI(this);
         contentPane.add(clientChatListPanel, this.PANEL_CHOICES[1]);
+        clientChatPanel = new ClientChatGUI(this);
+        contentPane.add(clientChatPanel, this.PANEL_CHOICES[2]);
 
         CardLayout cardLayout = (CardLayout) contentPane.getLayout();
         cardLayout.show(contentPane, this.currentPanel);
@@ -123,10 +128,15 @@ public class ClientApplication {
                     clientChatListPanel.update();
                     clientChatListPanel.updateChats();
                 } else if (panelName.equals(PANEL_CHOICES[2])) {
-
+                	clientChatPanel.update();
+                	clientChatPanel.updateChats();
                 }
             }
         });
+    }
+    
+    public Client getClient() {
+    	return this.client;
     }
 
     public JPanel getContentPane() {
@@ -147,6 +157,10 @@ public class ClientApplication {
 
     public ClientChatListGUI getClientChatListGUI() {
         return this.clientChatListPanel;
+    }
+    
+    public ClientChatGUI getClientChatGUI() {
+    	return this.clientChatPanel;
     }
 
     public JFrame getFrame() {
