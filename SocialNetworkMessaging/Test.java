@@ -459,11 +459,66 @@ public class Test {
 
     public class PacketTest {
         @Test(timeout = 1000)
-        public void testSum() {
+        public void getIdentifier() {
             Packet packet = new Packet();
-            String
-            assertNotNull(identifier);
-            assertNotNull
-
+            assertNotnull(getIdentifier());
         }
+        @Test(timeout = 1000)
+        public void getHandle() {
+            Packet packet = new Packet();
+            assertEquals("abc", packet.getHandle());
+        }
+        @Test(timeout = 1000)
+        public void getNewHandle() {
+            Packet packet = new Packet();
+            assertEquals("rajesh", packet.getNewHandle());
+        }
+        @Test(timeout = 1000)
+        public void getPassword() {
+            Packet packet = new Packet();
+            assertEquals("ehendrich", packet.getPassword());
+        }
+        @Test(timeout = 1000)
+        public void getChatName() {
+            Packet packet = new Packet();
+            assertEquals("raj_the_baller", packet.getChatName());
+        }
+        @Test(timeout = 1000)
+        public void getNewChatName() {
+            Packet packet = new Packet();
+            assertEquals("rajesh", packet.getChatName());
+        }
+        @Test(timeout = 1000)
+        public void getMessage() {
+            Packet packet = new Packet();
+            assertEquals("Hello Evan", packet.getMessage());
+        }
+        @Test(timeout = 1000)
+        public void getOldMessage() {
+            Packet packet = new Packet();
+            assertEquals("Hello Raj", packet.getOldMessage());
+        }
+        @Test(timeout = 1000)
+        public void getHandles() {
+            Packet packet = new Packet();
+            assertEquals("ehendrich", packet.getHandles());
+        }
+        @Test(timeout = 1000)
+        public void isVerified() {
+            Packet packet = new Packet();
+            assertEquals("ehendrich", packet.isVerified());
+            assertEquals("rajesh", packet.isVerified());
+        }
+        @Test(timeout = 1000)
+        public void getDescription() {
+            Packet packet = new Packet();
+            assertNotNull(packet.getDescription());
+        }
+        @Test(timeout = 1000)
+        public void getFriendHandle() {
+            Packet packet = new Packet();
+            assertNotNull(packet.getFriendHandle());
+        }
+
+    }
 }
