@@ -457,10 +457,13 @@ public class Test {
 
     }
 
-    public class ChatTest {
+    public class PacketTest {
         @Test(timeout = 1000)
         public void testSum() {
-            Chat chat = new Chat();
+            Packet packet = new Packet();
+            String
+            assertNotNull(identifier);
+            assertNotNull
 
         }
 }
