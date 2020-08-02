@@ -9,9 +9,9 @@ import java.net.Socket;
  * server. The server can handle multiple clients connected at once. Then it waits for
  * data from the client, makes appropriate changes to the data on the server then returns
  * some data (varying to the task it has just carried out).
- * 
+ *
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
- * 
+ *
  * @authors Evan Hendrich, Raj Karra
  * @version July 31, 2020
  */
@@ -23,20 +23,20 @@ public class WSCServer implements Runnable {
 
     /*
      * Constructor
-     * 
+     *
      * @param, Socket socket, the socket between client and server
      */
     public WSCServer(Socket socket) {
         this.socket = socket;
     } // WSCServer
-    
+
     /*
      * Blank constructor
      */
     public WSCServer() {
 
     } // WSCServer
-    
+
     /*
      * The main method of the server waits for clients to connect then starts a new
      * thread with that socket. It also initializes the user array list.
@@ -58,20 +58,20 @@ public class WSCServer implements Runnable {
 
     /*
      * The run method sits waiting for the client to send it data in the form of a
-     * Packet object. The server than takes that data, manipulates it, then updates 
+     * Packet object. The server than takes that data, manipulates it, then updates
      * the server data accordingly and returns data.
      */
     public void run() {
         try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
              ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
             while (true) {
-            		
+
                 Packet packet = (Packet) ois.readObject();
                 String ident = packet.getIdentifier();
                 Packet p;
 
                 if (ident.equals("deleteChat")) {
-                    p = deleteChat(packet); //doesn't work
+                    p = deleteChat(packet);
                     oos.writeObject(p);
                     oos.flush();
 
@@ -116,7 +116,7 @@ public class WSCServer implements Runnable {
                     oos.flush();
 
 
-                } if (ident.equals("deleteMessage")) {
+                } else if (ident.equals("deleteMessage")) {
                     p = deleteMessage(packet); //works
                     oos.writeObject(p);
                     oos.flush();
@@ -132,72 +132,77 @@ public class WSCServer implements Runnable {
                     oos.flush();
 
                 } else if (ident.equals("removeFriend")) {
-                	p = removeFriend(packet);
-                	oos.writeObject(p);
-                	oos.flush();
-                	
+                    p = removeFriend(packet);
+                    oos.writeObject(p);
+                    oos.flush();
+
                 } else if (ident.equals("update")) {
+                    System.out.println(users);
                     for (User user : users) {
                         if (user.getHandle().equals(packet.getHandle())) {
+                            System.out.println(user.getFriends());
                             oos.writeObject(user);
                             oos.flush();
                         } // end if
-                    } // end for
-                    
+                    }// end for
+
                 } else if (ident.equals("end")) {
-                	break;
+                    break;
                 } // end else ifs
             } // end while
-        } catch (IOException e) {
-			WriteToFile w = new WriteToFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                WriteToFile w = new WriteToFile();
 
-			w.writeUsers(users, "data.txt");
-        } catch (ClassNotFoundException a) {
-			WriteToFile w = new WriteToFile();
-
-			w.writeUsers(users, "data.txt");;
-        } // end catch statements
+                w.writeUsers(users, "data.txt");
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }  // end catch statements
     } // run
 
     /*
      * delete chat removes a chat object from the specified user
      * and removes that user from the chat.
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet deleteChat(Packet packet) {
-    	try {
-	        for (User user : users) {
-	            if (user.getHandle().equals(packet.getHandle())) {
-	                for (Chat chat : user.getChats()) {
-	                    if (chat.getChatName().equals(packet.getChatName())) {
-	                        for (User chatMember : chat.getChatMembers()) {
-	                            for (Chat friendChat : chatMember.getChats()) {
-	                                if (friendChat.getChatName().equals(packet.getChatName())) {
-	                                    friendChat.deleteMember(user);
-	                                } // end if checking for chat in friends' chats
-	                            } // end for iterating through chats of members of specified chat
-	                        } // end for iterating through members of specified chat
-	                    } // end if checking for chat name comparison
-	                    chat.deleteMember(user);
-	                } // end for iterating through chats of specified user 
-	                for (Chat c : user.getChats()) {
-	                	if (c.getChatName().equals(packet.getChatName())) {
-	                		user.removeChat(c);
-	                	} // end if
-	                } // end for
-	            } // end if checking for handle comparison
-	        } // end for iterating through users
-    	} catch (ConcurrentModificationException a) {
-	    	
-	    } // end catch
+        try {
+            for (User user : users) {
+                if (user.getHandle().equals(packet.getHandle())) {
+                    for (Chat chat : user.getChats()) {
+                        if (chat.getChatName().equals(packet.getChatName())) {
+                            for (User chatMember : chat.getChatMembers()) {
+                                for (Chat friendChat : chatMember.getChats()) {
+                                    if (friendChat.getChatName().equals(packet.getChatName())) {
+                                        friendChat.deleteMember(user);
+                                    } // end if checking for chat in friends' chats
+                                } // end for iterating through chats of members of specified chat
+                            } // end for iterating through members of specified chat
+                        } // end if checking for chat name comparison
+                        chat.deleteMember(user);
+                    } // end for iterating through chats of specified user
+                    for (Chat c : user.getChats()) {
+                        if (c.getChatName().equals(packet.getChatName())) {
+                            user.removeChat(c);
+                        } // end if
+                    } // end for
+                } // end if checking for handle comparison
+            } // end for iterating through users
+        } catch (ConcurrentModificationException a) {
+            WriteToFile w = new WriteToFile();
+            w.writeUsers(users, "placeholder");
+        } // end catch
         return new Packet(true, "success");
     } // deleteChat
 
     /*
      * sign in verifies that a client is signing in with correct
      * handle and password
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet signIn(Packet packet) {
@@ -215,10 +220,10 @@ public class WSCServer implements Runnable {
         Packet verify = new Packet(false, "Username does not exist");
         return verify;
     } // signIn
-    
+
     /*
      * change the password of a user
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet changePassword(Packet packet) {
@@ -231,10 +236,10 @@ public class WSCServer implements Runnable {
         } // end for
         return new Packet(true, "success");
     } // changePassword
-    
+
     /*
      * create a new user and add to the server
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet addUser(Packet packet) {
@@ -252,12 +257,12 @@ public class WSCServer implements Runnable {
         Packet verify = new Packet( true, "Account created successfully");
         return verify;
     } // addUser
-    
+
     /*
-     * Remove a user from the server. It removes the user from friend's 
+     * Remove a user from the server. It removes the user from friend's
      * list of users the user was previously friends with, and removes
      * them from all chats, but saves the messages they sent
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet deleteUser(Packet packet) {
@@ -275,10 +280,10 @@ public class WSCServer implements Runnable {
                         } // end if
                     } // end inner for
                     if (chat.getChatName().contains(packet.getHandle() + ", ")) {
-                    	chat.setChatName(chat.getChatName().replace(packet.getHandle() + ", ", ""));
+                        chat.setChatName(chat.getChatName().replace(packet.getHandle() + ", ", ""));
                     } // end if
                     if (chat.getChatName().contains(packet.getHandle())) {
-                    	chat.setChatName(chat.getChatName().replace(", " + packet.getHandle(), ""));
+                        chat.setChatName(chat.getChatName().replace(", " + packet.getHandle(), ""));
                     } // end if
                 } // end outer for
             }
@@ -288,9 +293,9 @@ public class WSCServer implements Runnable {
                     users.remove(user);
                 } // end if
             } // end for
-            
+
             return new Packet(true, "success");
-            
+
         } catch (ConcurrentModificationException a) {
             deleteUser(packet);
             return new Packet(true, "success");
@@ -298,18 +303,19 @@ public class WSCServer implements Runnable {
     } // deleteUser
 
     /*
-     * Change the handle of a user in all places where it is used: 
+     * Change the handle of a user in all places where it is used:
      * message handles and default chat names
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet changeHandle(Packet packet) {
+
         for (User user : users) {
             if (user.getHandle().equals(packet.getNewHandle())) {
                 return new Packet(false, "Username already exists");
             } // end if
         } // end for
-        
+
         for (User u: users) {
             if(!u.getHandle().equals(packet.getHandle())) {
                 for (User us: u.getFriends()) {
@@ -324,17 +330,17 @@ public class WSCServer implements Runnable {
                         } // end if
                     } // end inner for
                     if (c.getChatName().contains(packet.getHandle() + ", ")) {
-                    	c.setChatName(c.getChatName().replace(packet.getHandle() + ", ", 
-                    			packet.getNewHandle() + ", "));
+                        c.setChatName(c.getChatName().replace(packet.getHandle() + ", ",
+                                packet.getNewHandle() + ", "));
                     } // end if
                     if (c.getChatName().contains(packet.getHandle())) {
-                    	c.setChatName(c.getChatName().replace(packet.getHandle(), 
-                    			packet.getNewHandle() + ", "));
+                        c.setChatName(c.getChatName().replace(packet.getHandle(),
+                                packet.getNewHandle() + ", "));
                     } // end if
                     for (Message m : c.getChatContent()) {
-                    	if (m.getHandle().equals(packet.getHandle())) {
-                    		m.setHandle(packet.getNewHandle());
-                    	} // end if
+                        if (m.getHandle().equals(packet.getHandle())) {
+                            m.setHandle(packet.getNewHandle());
+                        } // end if
                     } // end inner for
                 } // end middle for
             } // end outer if
@@ -346,13 +352,14 @@ public class WSCServer implements Runnable {
             } // end if
         } // end for
 
-        return new Packet(true, "Handle updated succesfully");
+        return new Packet(true, "Handle updated successfully");
+
     } // changeHandle
 
     /*
      * Change the chat name of a chat for user specified and all
      * other chat members
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet changeChatName(Packet packet) {
@@ -369,7 +376,7 @@ public class WSCServer implements Runnable {
     /*
      * Add a friend to a user's friends list after checking that the
      * friend exists
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet addFriend(Packet packet) {
@@ -381,7 +388,8 @@ public class WSCServer implements Runnable {
             if (user.getHandle().equals(packet.getFriendHandle())) {
                 friendExists = true;
                 friend = user;
-            } else if (user.getHandle().equals(packet.getHandle())) {
+            }
+            if (user.getHandle().equals(packet.getHandle())) {
                 adder = user;
             } // end else if
         } // end for
@@ -404,20 +412,20 @@ public class WSCServer implements Runnable {
 
     /*
      * Add a message to a chat.
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet addMessage(Packet packet) {
         for (User user : users) {
             for (Chat chat : user.getChats()) {
                 if (chat.getChatName().equals(packet.getChatName())) {
-                	if (chat.getChatContent().size() < 1) {
-                		chat.addMessage(packet.getMessage());
-                		continue;
-                	} else if (!chat.getChatContent().get(chat.getChatContent().size() - 1).equals(
-            				packet.getMessage())) {
-                		chat.addMessage(packet.getMessage());
-                	} // end else if
+                    if (chat.getChatContent().size() < 1) {
+                        chat.addMessage(packet.getMessage());
+                        continue;
+                    } else if (!chat.getChatContent().get(chat.getChatContent().size() - 1).equals(
+                            packet.getMessage())) {
+                        chat.addMessage(packet.getMessage());
+                    } // end else if
                 } // end if checking for chat name comparison
             } // end inner for
         } // end outer for
@@ -426,7 +434,7 @@ public class WSCServer implements Runnable {
 
     /*
      * Delete a message from a chat.
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet deleteMessage(Packet packet) {
@@ -442,7 +450,7 @@ public class WSCServer implements Runnable {
 
     /*
      * Edit a message in a chat.
-     * 
+     *
      * @param packet, the packet containing required data to perform task
      */
     public Packet editMessage(Packet packet) {
@@ -455,10 +463,9 @@ public class WSCServer implements Runnable {
         } // end outer for
         return new Packet(true, "message");
     } //editMessage
-    
+
     /*
      * Adds a chat object to all users specified as chat members
-
      * @param originalPacket, the packet containing required data to perform task
      */
     public Packet addChat(Packet originalPacket) {
@@ -485,7 +492,7 @@ public class WSCServer implements Runnable {
             } // end outer for
 
             Chat newChat = new Chat(chatMembers, packet.getChatName());
-            
+
             //checks that the chat has not already been created with the default chat name
             if (packet.getChatName().equals("")) {
                 packet = new Packet("addChat", packet.getHandles(), newChat.getChatName());
@@ -496,58 +503,57 @@ public class WSCServer implements Runnable {
             for (User user : users) {
                 if (newChat.getChatMembers().contains(user)) {
                     user.addChat(newChat);
+                    System.out.println("added to " + user);
                 } // end if
             } // end for
-
             Packet verify = new Packet(true, "chat created");
             return verify;
         } // end while
     } //addChat
-    
+
     /*
      * Remove friend from both friends lists
-
      * @param packet, the packet containing required data to perform task
      */
     public Packet removeFriend(Packet packet) {
-    	User remover = new User();
-    	User removed = new User();
-    	for (User user : users) {
-    		if (user.getHandle().equals(packet.getHandle())) {
-    			for (User u : user.getFriends()) {
-    				if (u.getHandle().equals(packet.getFriendHandle())) {
-    					removed = u;
-    				} // end inner if
-    			} // end inner for
-    		} // end if
-    	}
-    	for (User user : users) {
-    		if (user.getHandle().equals(packet.getFriendHandle())) {
-    			for (User u : user.getFriends()) {
-    				if (u.getHandle().equals(packet.getHandle())) {
-    					remover = u;
-    				} // end inner if 
-    			} // end inner for
-    		} // end else if
-    	} // end for
-    	for (User user : users) {
-    		if (user.getHandle().equals(packet.getHandle())) {
-    			user.removeFriend(removed);
-    		} if (user.getHandle().equals(packet.getFriendHandle())) {
-    			user.removeFriend(remover);
-    		}
-    	}
-    	Packet p = new Packet(true, "success");
-    	return p;
+        User remover = new User();
+        User removed = new User();
+        for (User user : users) {
+            if (user.getHandle().equals(packet.getHandle())) {
+                for (User u : user.getFriends()) {
+                    if (u.getHandle().equals(packet.getFriendHandle())) {
+                        removed = u;
+                    } // end inner if
+                } // end inner for
+            } // end if
+        }
+        for (User user : users) {
+            if (user.getHandle().equals(packet.getFriendHandle())) {
+                for (User u : user.getFriends()) {
+                    if (u.getHandle().equals(packet.getHandle())) {
+                        remover = u;
+                    } // end inner if
+                } // end inner for
+            } // end else if
+        } // end for
+        for (User user : users) {
+            if (user.getHandle().equals(packet.getHandle())) {
+                user.removeFriend(removed);
+            } if (user.getHandle().equals(packet.getFriendHandle())) {
+                user.removeFriend(remover);
+            }
+        }
+        Packet p = new Packet(true, "success");
+        return p;
     } // removeFriend
-    
+
     /*
      * returns all server data
      */
     public ArrayList<User> getUsers() {
         return users;
     } // getUsers
-    
+
     /*
      * returns the User object specified by handle
      */
@@ -559,29 +565,29 @@ public class WSCServer implements Runnable {
         } // end for
         return null;
     } // getUser
-    
+
     /*
      * convert data to String
      */
     public String toString() {
-    	String s = "";
-    	for (User user : users) {
-    		s += user.getHandle() + "\n";
-    		s += user.getPassword() + "\n\n";
-    		s += "chats \n";
-    		for (Chat chat : user.getChats()) {
-    			s += chat.getChatName() + "\n\n";
-    			s += "users in chat \n";
-    			for (User u : chat.getChatMembers()) {
-    				s += u.getHandle() + "\n";
-    			}
-    			s += "\n";
-    			for (Message m : chat.getChatContent()) {
-    				s += m.getHandle() + "\n";
-    				s += m.getContent() + "\n\n";
-    			} // end inner for
-    		} // end middle for
-    	} // end outer for
-    	return s;
+        String s = "";
+        for (User user : users) {
+            s += user.getHandle() + "\n";
+            s += user.getPassword() + "\n\n";
+            s += "chats \n";
+            for (Chat chat : user.getChats()) {
+                s += chat.getChatName() + "\n\n";
+                s += "users in chat \n";
+                for (User u : chat.getChatMembers()) {
+                    s += u.getHandle() + "\n";
+                }
+                s += "\n";
+                for (Message m : chat.getChatContent()) {
+                    s += m.getHandle() + "\n";
+                    s += m.getContent() + "\n\n";
+                } // end inner for
+            } // end middle for
+        } // end outer for
+        return s;
     } //toString
 } // WSCServer
