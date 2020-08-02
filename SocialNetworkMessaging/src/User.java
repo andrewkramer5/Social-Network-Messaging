@@ -116,10 +116,13 @@ public class User implements Serializable {
      * @param Chat c, the chat to be removed
      */
     public void removeChat(Chat c) {
+    	Chat removed = null;
         for (Chat chat : chats) {
         	if (chat.getChatName().equals(c.getChatName())) {
-        		chats.remove(chat);
+        		removed = chat;
         	} // end if
         } // end for
+        if (removed != null)
+        	chats.remove(removed);
     } // removeChat
 } // User
