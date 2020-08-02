@@ -89,19 +89,17 @@ public class ClientChatListGUI extends JPanel {
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (newHandle != null) {
                     if (!newHandle.equals("")) {
-                        //TODO send change handle packet to server with newHandle
-                        //TODO receive verify packet from server
                         try {
-                            Socket s = new Socket("localhost", 4200);
-                            Client c = new Client(s);
-                            c.sendPacket(new Packet("newHandle", app.getLoggedInUser().getHandle(),
+                            app.getClient().sendPacket(new Packet("newHandle", app.getLoggedInUser().getHandle(),
                                     newHandle));
-                            Packet p = c.receivePacket();
+                            Packet p = app.getClient().receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", newHandle));
-                                app.setLoggedInUser(c.receiveUser());
+                                //TODO send and receive update packet
+                                //TODO set loggedInUser
+                                //app.getClient().sendPacket(new Packet("update", newHandle));
+                                //app.setLoggedInUser(app.getClient().receiveUser());
                             }
                             else {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -109,21 +107,9 @@ public class ClientChatListGUI extends JPanel {
                             }
                         }
                         catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                            JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                     "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                         }
-						/*
-						if (packet.isVerified()) {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-				    		//TODO get user with update packet using newHandle
-				    		//TODO set loggedInUser to received user
-				    		update();
-						} else {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-						}
-						*/
                     } else {
                         JOptionPane.showMessageDialog(null, "Field can't be empty!",
                                 "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
@@ -141,36 +127,23 @@ public class ClientChatListGUI extends JPanel {
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (newPassword != null) {
                     if (!newPassword.isEmpty()) {
-                        //TODO send change password packet to server with newPassword
-                        //TODO receive verify packet from server
                         try {
-                            Socket s = new Socket("localhost", 4200);
-                            Client c = new Client(s);
-                            c.sendPacket(new Packet("changePassword", app.getLoggedInUser().getHandle(),
+                            app.getClient().sendPacket(new Packet("changePassword", app.getLoggedInUser().getHandle(),
                                     newPassword));
-                            Packet p = c.receivePacket();
+                            Packet p = app.getClient().receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
-                                app.setLoggedInUser(c.receiveUser());
+                                //TODO send and receive update packet
+                                //TODO set loggedInUser
+                                //app.getClient().sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                                //app.setLoggedInUser(app.getClient().receiveUser());
                             }
                         }
                         catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                            JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                     "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                         }
-						/*
-						if (packet.isVerified()) {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-				    		//TODO get user with update packet
-				    		//TODO set loggedInUser to received user
-						} else {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-						}
-						*/
                     } else {
                         JOptionPane.showMessageDialog(null, "Field can't be empty!",
                                 "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
@@ -188,19 +161,17 @@ public class ClientChatListGUI extends JPanel {
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (friendHandle != null) {
                     if (!friendHandle.equals("")) {
-                        //TODO send add friend packet to server with friendHandle
-                        //TODO receive verify packet from server
                         try {
-                            Socket s = new Socket("localhost", 4200);
-                            Client c = new Client(s);
-                            c.sendPacket(new Packet("addFriend", app.getLoggedInUser().getHandle(),
+                            app.getClient().sendPacket(new Packet("addFriend", app.getLoggedInUser().getHandle(),
                                     friendHandle));
-                            Packet p = c.receivePacket();
+                            Packet p = app.getClient().receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
-                                app.setLoggedInUser(c.receiveUser());
+                                //TODO send and receive update packet
+                                //TODO set loggedInUser
+                                //app.getClient().sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                                //app.setLoggedInUser(app.getClient().receiveUser());
 
                             }
                             else {
@@ -209,21 +180,9 @@ public class ClientChatListGUI extends JPanel {
                             }
                         }
                         catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                            JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                     "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                         }
-						/*
-						if (packet.isVerified()) {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-				    		//TODO get user with update packet
-				    		//TODO set loggedInUser to received user
-				    		update();
-						} else {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-						}
-						*/
                     } else {
                         JOptionPane.showMessageDialog(null, "Field can't be empty!",
                                 "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
@@ -241,18 +200,17 @@ public class ClientChatListGUI extends JPanel {
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (friendHandle != null) {
                     if (!friendHandle.equals("")) {
-                        //TODO send remove friend packet to server with friendHandle
-                        //TODO receive verify packet from server
                         try {
-                            Socket s = new Socket("localhost", 4200);
-                            Client c = new Client(s);
-                            c.sendPacket(new Packet("removeFriend", app.getLoggedInUser().getHandle(),friendHandle));
-                            Packet p = c.receivePacket();
+                            app.getClient().sendPacket(new Packet("removeFriend", 
+                            		app.getLoggedInUser().getHandle(),friendHandle));
+                            Packet p = app.getClient().receivePacket();
                             if(p.isVerified()) {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
-                                app.setLoggedInUser(c.receiveUser());
+                                //TODO send and receive update packet from server
+                                //TODO set loggedInUser
+                                //app.getClient().sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                                //p = app.getClient().receivePacket();
                             }
                             else {
                                 JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -260,21 +218,9 @@ public class ClientChatListGUI extends JPanel {
                             }
                         }
                         catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                            JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                     "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                         }
-						/*
-						if (packet.isVerified()) {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-				    		//TODO get user with update packet
-				    		//TODO set loggedInUser to received user
-				    		update();
-						} else {
-							JOptionPane.showMessageDialog(null, packet.getDescription(),
-				    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-						}
-						*/
                     } else {
                         JOptionPane.showMessageDialog(null, "Field can't be empty!",
                                 "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
@@ -301,10 +247,16 @@ public class ClientChatListGUI extends JPanel {
                 int option = JOptionPane.showConfirmDialog(app.getFrame(), "Are you sure you want to delete your account?",
                         "WSC Messenger", JOptionPane.OK_CANCEL_OPTION);
                 if (option == JOptionPane.OK_OPTION) {
-                    //TODO send delete account packet to server with loggedInUser.getHandle()
-
+                	/*
+                	try {
+                		//TODO send delete account packet to server with loggedInUser.getHandle()
+                	} catch (IOException e) {
+                		JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
+                                "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+                	}
+                	*/
+                	app.setLoggedInUser(new User("", ""));
                     app.setPanel(app.PANEL_CHOICES[0]);
-                    app.setLoggedInUser(new User("", ""));
                 }
             }
         });
@@ -362,19 +314,16 @@ public class ClientChatListGUI extends JPanel {
                         if (!cancelled) {
                             Collections.sort(handlesList);
                             String[] handles = (String[]) handlesList.toArray();
-
-                            //TODO send add chat packet to server with chatName and handles array
-                            //TODO receive verify packet from server
                             try {
-                                Socket s = new Socket("localhost", 4200);
-                                Client c = new Client(s);
-                                c.sendPacket(new Packet("addChat", handles, chatName));
-                                Packet p = c.receivePacket();
+                                app.getClient().sendPacket(new Packet("addChat", handles, chatName));
+                                Packet p = app.getClient().receivePacket();
                                 if(p.isVerified()) {
                                     JOptionPane.showMessageDialog(null, p.getDescription(),
                                         "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-                                    c.sendUser(app.getLoggedInUser());
-                                    app.setLoggedInUser(c.receiveUser());
+                                    //TODO send and receive update packet
+                                    //TODO set loggedInUser
+                                    //app.getClient().sendUser(app.getLoggedInUser());
+                                    //app.setLoggedInUser(app.getClient().receiveUser());
                                 }
                                 else {
                                     JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -382,22 +331,9 @@ public class ClientChatListGUI extends JPanel {
                                 }
                             }
                             catch (Exception ex) {
-                                JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                                JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                         "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                             }
-							/*
-							if (packet.isVerified()) {
-								JOptionPane.showMessageDialog(null, packet.getDescription(),
-					    				"WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
-					    		//TODO send get user packet to server
-					    		//TODO set loggedInUser to received user
-					    		update();
-					    		updateChats();
-							} else {
-								JOptionPane.showMessageDialog(null, packet.getDescription(),
-					    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-							}
-							*/
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Field can't be empty!",
@@ -407,8 +343,6 @@ public class ClientChatListGUI extends JPanel {
             }
         });
         chatListPanel.add(addChatButton, BorderLayout.SOUTH);
-
-        //chatListPanel.setBackground(Color.green);
         //End Chat List Panel
 
         //Friend List Panel
@@ -427,8 +361,6 @@ public class ClientChatListGUI extends JPanel {
         this.add(accountInfoPanel, BorderLayout.WEST);
         this.add(chatListPanel, BorderLayout.CENTER);
         this.add(friendListPanel, BorderLayout.EAST);
-        //this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        //this.setOpaque(true);
         this.setPreferredSize(new Dimension(this.WINDOW_WIDTH, this.WINDOW_HEIGHT));
     }
 
@@ -440,14 +372,6 @@ public class ClientChatListGUI extends JPanel {
                 usernameLabel.setText(app.getLoggedInUser().getHandle());
             }
         });
-        
-        /*
-        try {
-			app.getClient().sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
-			Packet p = app.getClient().receivePacket();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 
         numFriends = app.getLoggedInUser().getFriends().size();
         friendListContainer = new JPanel();
@@ -456,7 +380,6 @@ public class ClientChatListGUI extends JPanel {
         friendListPanel.add(friendListScrollPane, BorderLayout.CENTER);
 
         for (User u : app.getLoggedInUser().getFriends()) {
-            //System.out.println("Adding chats");
             JLabel l = new JLabel(u.getHandle());
             l.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
             l.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
@@ -471,17 +394,7 @@ public class ClientChatListGUI extends JPanel {
         {
             public void run()
             {
-            	numChats = app.getLoggedInUser().getChats().size();
-        		chatListContainer = new JPanel();
-        		chatListContainer.setLayout(new GridLayout(numChats, 1, 0, 0));
-        		chatListContainer.setPreferredSize(new Dimension(50, numChats * 100));
-        		chatListScrollPane = new JScrollPane(chatListContainer);
-        		chatListPanel.add(chatListScrollPane, BorderLayout.CENTER);
-
-            	for (Chat c : app.getLoggedInUser().getChats()) {
-            		System.out.println("Adding chats");
-            		chatListContainer.add(new ChatPanel(c));
-            	}
+            	
             }
         });
         */
@@ -494,7 +407,6 @@ public class ClientChatListGUI extends JPanel {
         chatListPanel.add(chatListScrollPane, BorderLayout.CENTER);
 
         for (Chat c : app.getLoggedInUser().getChats()) {
-            //System.out.println("Adding chats");
             chatListContainer.add(new ChatPanel(c));
         }
     }
@@ -502,7 +414,21 @@ public class ClientChatListGUI extends JPanel {
     public void chatClicked(Chat chat) {
         app.setSelectedChat(chat);
         app.setPanel(app.PANEL_CHOICES[2]);
-        //System.out.println(chat.getChatName());
+    }
+    
+    public void deleteChat(Chat chat) {
+    	/*
+    	try {
+    		//TODO send delete chat packet
+        	//TODO receive verify packet
+        	//TODO send update packet
+        	//TODO set loggedInUser
+        	//TODO updateChats();
+    	} catch (IOException e) {
+    		JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
+                    "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+    	}
+    	*/
     }
 
     class ChatPanel extends JPanel {
@@ -529,7 +455,7 @@ public class ClientChatListGUI extends JPanel {
             deleteChatButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                	deleteChat(chat);
                 }
             });
 
@@ -592,7 +518,7 @@ public class ClientChatListGUI extends JPanel {
                 try {
                     Client c = new Client(new Socket("localhost",4200));
                     while(true) {
-                        // c.sendPacket(new Packet("update"));
+                        //c.sendPacket(new Packet("update"));
                         app.setLoggedInUser(c.receiveUser());
                     }
                 }
