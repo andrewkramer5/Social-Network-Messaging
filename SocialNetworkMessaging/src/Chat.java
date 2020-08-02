@@ -75,13 +75,16 @@ public class Chat implements Serializable{
 	 * @param User user, the user to be deleted
 	 */
 	public void deleteMember(User user) {
+		User removed = null;
 		for (User u : chatMembers) {
 			
 			if (u.getHandle().equals(user.getHandle())) {
 				
-				chatMembers.remove(u);
+				removed = u;
 			} // end if
 		} // end for
+		
+		chatMembers.remove(removed);
 		
 		if (chatName.contains(user.getHandle() + ", ")) {
 			chatName.replace(user.getHandle() + ", ",  "");
@@ -103,14 +106,16 @@ public class Chat implements Serializable{
 	 * @param Message message, the message to be deleted
 	 */
 	public void deleteMessage(Message message) {
-		for (Message m : getChatContent()) {
+		Message removed = null;
+		for (Message m : chatContent) {
 			
 			if (m.getHandle().equals(message.getHandle()) &&
 					m.getContent().equals(message.getContent())) {
 				
-				chatContent.remove(m);
+				removed = m;
 			} // end if
 		} // end for
+		chatContent.remove(removed);
 	} // deleteMessage
 	
 	/* 
