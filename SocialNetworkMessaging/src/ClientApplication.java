@@ -69,7 +69,7 @@ public class ClientApplication {
         });
 
         app.selectedChat = app.loggedInUser.getChats().get(0);
-        app.setPanel(app.PANEL_CHOICES[2]);
+        app.setPanel(app.PANEL_CHOICES[0]);
 
         try {
             Client client = new Client(new Socket("127.0.0.1", 4200));

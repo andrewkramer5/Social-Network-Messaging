@@ -100,17 +100,16 @@ public class ClientLoginGUI extends JPanel {
                     JOptionPane.showMessageDialog(null, "One of the fields is empty!",
                             "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    //TODO send login packet to the server
-                    //TODO receive verify packet from the server
                     try {
-                        Socket s = new Socket("localhost", 4200);
-                        Client c = new Client(s);
-                        c.sendPacket(new Packet("signIn", app.getLoggedInUser().getHandle(),
-                                app.getLoggedInUser().getPassword()));
-                        Packet p = c.receivePacket();
+                        app.getClient().sendPacket(new Packet("signIn", app.getLoggedInUser().getHandle(),
+                        app.getLoggedInUser().getPassword()));
+                        Packet p = app.getClient().receivePacket();
                         if(p.isVerified()) {
-                            c.sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
-                            app.setLoggedInUser(c.receiveUser());
+                        	//TODO send and receive update packet
+                        	//TODO set loggedInUser
+                        	app.setPanel(app.PANEL_CHOICES[1]);
+                            //app.getClient().sendPacket(new Packet("update", app.getLoggedInUser().getHandle()));
+                            //app.setLoggedInUser(app.getClient().receiveUser());
                         }
                         else {
                             JOptionPane.showMessageDialog(null, p.getDescription(),
@@ -119,20 +118,9 @@ public class ClientLoginGUI extends JPanel {
 
                     }
                     catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                        JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                 "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                     }
-					/*
-					if (packet.isVerified()) {
-						//TODO get user from server
-						//TODO set loggedInUser to user from server
-
-						app.setLoggedInUser(new User(handleField.getText(), passwordField.getText()));
-						app.setPanel(app.PANEL_CHOICES[1]);
-					} else {
-						JOptionPane.showMessageDialog(null, packet.getDescription(),
-			    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-					}*/
                 }
             }
         });
@@ -148,33 +136,23 @@ public class ClientLoginGUI extends JPanel {
                     JOptionPane.showMessageDialog(null, "One of the fields is empty!",
                             "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    //TODO send add user packet to the server
-                    //TODO receive verify packet from the server
                     try {
-                        Socket s = new Socket("localhost", 4200);
-                        Client c = new Client(s);
-                        c.sendPacket(new Packet("addUser", app.getLoggedInUser().getHandle(),
+                        app.getClient().sendPacket(new Packet("addUser", app.getLoggedInUser().getHandle(),
                                 app.getLoggedInUser().getPassword()));
-                        Packet p = c.receivePacket();
-                        if(!p.isVerified()) {
-                            JOptionPane.showMessageDialog(null, p.getDescription(),
-                                    "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
+                        Packet p = app.getClient().receivePacket();
+                        if (p.isVerified()) {
+                        	JOptionPane.showMessageDialog(null, p.getDescription() + ", you can now login",
+                                    "WSC Messenger", JOptionPane.INFORMATION_MESSAGE);
                         }
                         else {
-                            //add gui
+                        	JOptionPane.showMessageDialog(null, p.getDescription(),
+                                    "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Unable to connect to server!",
+                        JOptionPane.showMessageDialog(null, "ERROR: Packets couldn't be sent and received!",
                                 "WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
                     }
-
-					/*
-					if (!packet.isVerified()) {
-						JOptionPane.showMessageDialog(null, packet.getDescription(), 
-			    				"WSC Messenger Error", JOptionPane.ERROR_MESSAGE);
-					}
-					*/
                 }
             }
         });
