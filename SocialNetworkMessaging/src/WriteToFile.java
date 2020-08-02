@@ -29,13 +29,40 @@ public class WriteToFile {
      */
     public void writeUsers(ArrayList<User> users, String filename) {
     	try {
-	        ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(new File(filename)));
+    		FileOutputStream fos = new FileOutputStream(filename, false);
+			PrintWriter pw = new PrintWriter(fos);
 	        for (User u : users) {
-	            o.writeObject(u);
-	            o.writeBytes("\n");
-	            o.flush();
+	        	String out = "";
+	        	out = out + u.getHandle() + ":";
+	        	out = out + u.getPassword() + ":";
+	        	for (User friend : u.getFriends()) {
+	        		out += friend.getHandle() + ",";
+	        	}
+	        	out = out.substring(0, out.length() - 1);
+	        	out += ":";
+	        	for (Chat c : u.getChats()) {
+	        		out += c.getChatName() + ";";
+	        		for (User member : c.getChatMembers()) {
+	        			out += member.getHandle() + ".";
+	        		}
+	        		out = out.substring(0, out.length() - 1);
+	        		out += ";";
+	        		for (Message m : c.getChatContent()) {
+	        			out += m.getHandle() + "/";
+	        			out += m.getContent() + ".";
+	        		}
+	        		out = out.substring(0, out.length() - 1);
+	        		out += "\n";
+	        	}
+	        	pw.write(out);
+	        	pw.flush();
+	        	
+//	            o.writeObject(u);
+//	            o.writeBytes("\n");
+//	            o.flush();
 	        } // end for
-	        o.close();
+//	        o.close();
+	        pw.close();
     	} catch (IOException a) {
     		
     	} // end catch
