@@ -8,76 +8,65 @@ import org.junit.Before;
 import org.junit.rules.Timeout;
 import java.util.ArrayList;
 
-public static void main(String[] args) {
-        Result result = JUnitCore.runClasses(TestCase.class);
-        if (result.wasSuccessful()) {
-        System.out.println("Excellent - Test ran successfully");
-        } else {
-        for (Failure failure : result.getFailures()) {
-        System.out.println(failure.toString());
-        }
-        }
-}
-
 public class PacketTest {
     @Test(timeout = 1000)
     public void getIdentifier() {
-        Packet packet = new Packet();
-        assertEquals(null, packet.getIdentifier());
+        Packet packet = new Packet("hi", "a");
+        assertEquals("hi", packet.getIdentifier());
     }
     @Test(timeout = 1000)
     public void getHandle() {
-        Packet packet = new Packet("abc", "123");
-        assertEquals("abc", packet.getHandle());
+        Packet packet = new Packet("a", "handle", "a");
+        assertEquals("handle", packet.getHandle());
     }
     @Test(timeout = 1000)
     public void getNewHandle() {
-        Packet packet = new Packet("rajesh", "123");
-        assertEquals("rajesh", packet.getNewHandle());
+        Packet packet = new Packet("changeHandle", "a", "newHandle");
+        assertEquals("newHandle", packet.getNewHandle());
     }
     @Test(timeout = 1000)
     public void getPassword() {
-        Packet packet = new Packet("rajesh", "123");
-        assertEquals("123", packet.getPassword());
+        Packet packet = new Packet("signIn", "a", "password");
+        assertEquals("password", packet.getPassword());
     }
     @Test(timeout = 1000)
     public void getChatName() {
-        Packet packet = new Packet("raj_the_baller", "123");
-        assertEquals("raj_the_baller", packet.getChatName());
+        Packet packet = new Packet("deleteChat", "a", "chat name");
+        assertEquals("chat name", packet.getChatName());
     }
     @Test(timeout = 1000)
     public void getNewChatName() {
-        Packet packet = new Packet("rajesh", "123");
-        assertEquals("rajesh", packet.getChatName());
+        Packet packet = new Packet("a", "a", "a", "new name");
+        assertEquals("new name", packet.getNewChatName());
     }
     @Test(timeout = 1000)
     public void getMessage() {
-        Packet packet = new Packet();
-        assertEquals(null, packet.getMessage());
+        Packet packet = new Packet("a", "a", new Message("a", "message"));
+        assertEquals("message", packet.getMessage().getContent());
     }
     @Test(timeout = 1000)
     public void getOldMessage() {
-        Packet packet = new Packet();
-        assertEquals(null, packet.getOldMessage());
+        Packet packet = new Packet("a", "a", new Message("a", "a"), new Message("a", "old message"));
+        assertEquals("old message", packet.getOldMessage().getContent());
     }
     @Test(timeout = 1000)
     public void getHandles() {
-        Packet packet = new Packet();
-        assertEquals(null, packet.getHandles());
+        Packet packet = new Packet("a", new String[] {"Evan", "Bob"}, "a");
+        assertEquals("Evan", packet.getHandles()[0]);
     }
     @Test(timeout = 1000)
     public void isVerified() {
-        Packet packet = new Packet();
-        assertEquals(null, packet.isVerified());
+        Packet packet = new Packet(true, "a");
+        assertEquals(true, packet.isVerified());
     }
     @Test(timeout = 1000)
     public void getDescription() {
-        Packet packet = new Packet();
-        assertNotNull(packet.getDescription());
+        Packet packet = new Packet(true, "description");
+        assertEquals("description", packet.getDescription());
     }
     @Test(timeout = 1000)
     public void getFriendHandle() {
-        Packet packet = new Packet();
-        assertNotNull(packet.getFriendHandle());
+        Packet packet = new Packet("addFriend", "a", "friend handle");
+        assertEquals("friend handle", packet.getFriendHandle());
     }
 }
