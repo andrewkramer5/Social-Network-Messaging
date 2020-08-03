@@ -369,10 +369,11 @@ public class ClientChatListGUI extends JPanel {
         {
             public void run()
             {
-                usernameLabel.setText(app.getLoggedInUser().getHandle());
+                
             }
         });
-
+	
+	usernameLabel.setText(app.getLoggedInUser().getHandle());
         numFriends = app.getLoggedInUser().getFriends().size();
         friendListContainer = new JPanel();
         friendListContainer.setLayout(new GridLayout(numFriends, 1, 0, 5));
