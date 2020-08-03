@@ -61,6 +61,13 @@ public class Chat implements Serializable{
 	} // Chat
 	
 	/*
+	 * blank constructor
+	 */
+	public Chat() {
+		
+	}
+	
+	/*
 	 * Add a member to the chat
 	 * 
 	 * @param User user, the user to be added

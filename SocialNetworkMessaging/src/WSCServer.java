@@ -1,3 +1,4 @@
+  
 import java.io.*;
 import java.util.ConcurrentModificationException;
 import java.util.ArrayList;
@@ -170,32 +171,29 @@ public class WSCServer implements Runnable {
      * @param packet, the packet containing required data to perform task
      */
     public Packet deleteChat(Packet packet) {
-        try {
-            for (User user : users) {
-                if (user.getHandle().equals(packet.getHandle())) {
-                    for (Chat chat : user.getChats()) {
-                        if (chat.getChatName().equals(packet.getChatName())) {
-                            for (User chatMember : chat.getChatMembers()) {
-                                for (Chat friendChat : chatMember.getChats()) {
-                                    if (friendChat.getChatName().equals(packet.getChatName())) {
-                                        friendChat.deleteMember(user);
-                                    } // end if checking for chat in friends' chats
-                                } // end for iterating through chats of members of specified chat
-                            } // end for iterating through members of specified chat
-                        } // end if checking for chat name comparison
-                        chat.deleteMember(user);
-                    } // end for iterating through chats of specified user
-                    for (Chat c : user.getChats()) {
-                        if (c.getChatName().equals(packet.getChatName())) {
-                            user.removeChat(c);
-                        } // end if
-                    } // end for
-                } // end if checking for handle comparison
-            } // end for iterating through users
-        } catch (ConcurrentModificationException a) {
-            WriteToFile w = new WriteToFile();
-            w.writeUsers(users, "placeholder");
-        } // end catch
+        for (User user : users) {
+            if (user.getHandle().equals(packet.getHandle())) {
+                for (Chat chat : user.getChats()) {
+                    if (chat.getChatName().equals(packet.getChatName())) {
+                        for (User chatMember : chat.getChatMembers()) {
+                            for (Chat friendChat : chatMember.getChats()) {
+                                if (friendChat.getChatName().equals(packet.getChatName())) {
+                                    friendChat.deleteMember(user);
+                                } // end if checking for chat in friends' chats
+                            } // end for iterating through chats of members of specified chat
+                        } // end for iterating through members of specified chat
+                    } // end if checking for chat name comparison
+                    chat.deleteMember(user);
+                } // end for iterating through chats of specified user
+                Chat removed = new Chat();
+                for (Chat c : user.getChats()) {
+                    if (c.getChatName().equals(packet.getChatName())) {
+                        removed = c;
+                    } // end if
+                } // end for
+                user.removeChat(removed);
+            } // end if checking for handle comparison
+        } // end for iterating through users
         return new Packet(true, "success");
     } // deleteChat
 
@@ -266,40 +264,40 @@ public class WSCServer implements Runnable {
      * @param packet, the packet containing required data to perform task
      */
     public Packet deleteUser(Packet packet) {
-        try {
-            for (User user : users) {
-                for (User friend : (user.getFriends())) {
-                    if (friend.getHandle().equals(packet.getHandle())) {
-                        user.removeFriend(friend);
-                    } // end if
-                } // end for
-                for (Chat chat : user.getChats()) {
-                    for (User chatFriend : chat.getChatMembers()) {
-                        if (chatFriend.getHandle().equals(packet.getHandle())) {
-                            chat.deleteMember(chatFriend);
-                        } // end if
-                    } // end inner for
-                    if (chat.getChatName().contains(packet.getHandle() + ", ")) {
-                        chat.setChatName(chat.getChatName().replace(packet.getHandle() + ", ", ""));
-                    } // end if
-                    if (chat.getChatName().contains(packet.getHandle())) {
-                        chat.setChatName(chat.getChatName().replace(", " + packet.getHandle(), ""));
-                    } // end if
-                } // end outer for
-            }
-
-            for (User user : users) {
-                if (user.getHandle().equals(packet.getHandle())) {
-                    users.remove(user);
+    	User removed = new User();
+        for (User user : users) {
+            for (User friend : (user.getFriends())) {
+                if (friend.getHandle().equals(packet.getHandle())) {
+                    removed = friend;
                 } // end if
             } // end for
+            user.removeFriend(removed);
+            for (Chat chat : user.getChats()) {
+            	removed = new User();
+                for (User chatFriend : chat.getChatMembers()) {
+                    if (chatFriend.getHandle().equals(packet.getHandle())) {
+                        removed = chatFriend;
+                    } // end if
+                } // end inner for
+                chat.deleteMember(removed);
+                if (chat.getChatName().contains(packet.getHandle() + ", ")) {
+                    chat.setChatName(chat.getChatName().replace(packet.getHandle() + ", ", ""));
+                } // end if
+                if (chat.getChatName().contains(packet.getHandle())) {
+                    chat.setChatName(chat.getChatName().replace(", " + packet.getHandle(), ""));
+                } // end if
+            } // end outer for
+        }
+        
+        removed = new User();
+        for (User user : users) {
+            if (user.getHandle().equals(packet.getHandle())) {
+                removed = user;
+            } // end if
+        } // end for
+        users.remove(removed);
 
-            return new Packet(true, "success");
-
-        } catch (ConcurrentModificationException a) {
-            deleteUser(packet);
-            return new Packet(true, "success");
-        } // end catch
+        return new Packet(true, "success");
     } // deleteUser
 
     /*
