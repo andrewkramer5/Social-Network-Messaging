@@ -31,31 +31,47 @@ public class WriteToFile {
     	try {
     		FileOutputStream fos = new FileOutputStream(filename, false);
 			PrintWriter pw = new PrintWriter(fos);
+			String out = "";
 	        for (User u : users) {
-	        	String out = "";
+	        	out = "";
 	        	out = out + u.getHandle() + ":";
 	        	out = out + u.getPassword() + ":";
+	        	if (u.getFriends().size() < 1) {
+	        		out += "noFriends;";
+	        	}
 	        	for (User friend : u.getFriends()) {
 	        		out += friend.getHandle() + ",";
 	        	}
 	        	out = out.substring(0, out.length() - 1);
 	        	out += ":";
+	        	if (u.getChats().size() < 1) {
+	        		out += "no;no;no;";
+	        	}
 	        	for (Chat c : u.getChats()) {
 	        		out += c.getChatName() + ";";
+	        		if (c.getChatMembers().size() < 1) {
+	        			out += "nonExistent;";
+	        		}
 	        		for (User member : c.getChatMembers()) {
 	        			out += member.getHandle() + ".";
 	        		}
 	        		out = out.substring(0, out.length() - 1);
 	        		out += ";";
+	        		if (c.getChatContent().size() < 1) {
+	        			out += "noMessages;";
+	        		}
 	        		for (Message m : c.getChatContent()) {
 	        			out += m.getHandle() + "/";
-	        			out += m.getContent() + ".";
+	        			out += m.getContent() + "|";
 	        		}
 	        		out = out.substring(0, out.length() - 1);
-	        		out += "\n";
+	        		out += ";";
 	        	}
+        		out += "\n";
+        		System.out.println(out);
 	        	pw.write(out);
 	        	pw.flush();
+	        	out = "";
 	        	
 //	            o.writeObject(u);
 //	            o.writeBytes("\n");
@@ -68,43 +84,92 @@ public class WriteToFile {
     	} // end catch
     } // writeUsers
     
-    
-//    public void writeChat(ArrayList<Chat> chats, String filename) throws IOException {
-//        ObjectOutputStream o = new ObjectOutputStream(new FileOutputStream(new File(filename)));
-//        for (Chat c : chats) {
-//            o.writeObject(c);
-//            o.writeBytes("\n");
-//            o.flush();
-//        }
-//        o.close();
-//    }
-//    public ArrayList<User> readUsersFromFile(String filename) throws IOException, ClassNotFoundException {
-//        ObjectInputStream o = new ObjectInputStream(new FileInputStream(new File(filename)));
-//        ArrayList<User> users= new ArrayList<>();
-//        while(true) {
-//            User u = (User) o.readObject();
-//            if(u != null) {
-//                users.add(u);
-//            }
-//            else {
-//                break;
-//            }
-//        }
-//        return users;
-//    }
-//
-//    public ArrayList<Chat> readChatsFromFile(String filename) throws IOException, ClassNotFoundException {
-//        ObjectInputStream o = new ObjectInputStream(new FileInputStream(new File(filename)));
-//        ArrayList<Chat> chats= new ArrayList<>();
-//        while(true) {
-//            Chat c = (Chat) o.readObject();
-//            if(c != null) {
-//                users.add(c);
-//            }
-//            else {
-//                break;
-//            }
-//        }
-//        return chats;
-//    }
+    public ArrayList<User> readUser() {
+    	String filename = "data.txt";
+    	var users = new ArrayList<User>();
+    	var friendsList = new ArrayList<String>();
+    	var Chats = new ArrayList<String>();
+    	try {
+    		FileReader fr = new FileReader(filename);
+    		BufferedReader br = new BufferedReader(fr);
+    		String input = br.readLine();
+    		while (input != null) {
+    			System.out.println(input);
+    			String handle = input.substring(0, input.indexOf(':'));
+    			input = input.substring(input.indexOf(':') + 1, input.length());
+    			String password = input.substring(0, input.indexOf(':'));
+    			input = input.substring(input.indexOf(':') + 1, input.length());
+    			User u = new User(handle, password);
+    			users.add(u);
+    			String friends = input.substring(0, input.indexOf(':'));
+    			friendsList.add(friends);
+    			input = input.substring(input.indexOf(':') + 1, input.length());
+    			String chats = input;
+    			Chats.add(chats);
+    			input = br.readLine();
+    		} // end while
+    		int i = 0;
+    		for (String s : friendsList) {
+    			for (String friend : s.split(",")) {
+    				for (User u : users) {
+    					if (u.getHandle().equals(friend)) {
+    						users.get(i).addFriend(u);
+    					}
+    				}
+    			}
+    			i++;
+    		}
+    		int j = 0;
+    		for (String s : Chats) {
+    			var chatMembers = new ArrayList<User>();
+    			if (!s.contains(";")) {
+    				break;
+    			}
+    			String chatName = s.substring(0, s.indexOf(';'));
+    			s = s.substring(s.indexOf(';') + 1, s.length());
+    			String members = s.substring(0, s.indexOf(";"));
+    			s = s.substring(s.indexOf(";") + 1, s.length());
+    			String messages = s.substring(0, s.indexOf(";"));
+    			while (members.contains(".")) {
+    				String member = members.substring(0, members.indexOf('.'));
+    				for (User u : users) {
+    					if (u.getHandle().equals(member)) {
+    						chatMembers.add(u);
+    					}
+    				}
+    				if (members.contains(".")) {
+    					members = members.substring(members.indexOf(".") + 1, members.length());
+    				} else {
+    					break;
+    				}
+    			}
+    			Chat c = new Chat(chatMembers, chatName);
+    			String content;
+    			while (messages.contains("|")) {
+    				String sender = messages.substring(0, messages.indexOf("/"));
+    				messages = messages.substring(messages.indexOf("/"), messages.length());
+    				if (messages.contains("|")) {
+	    				content = messages.substring(0, messages.indexOf("|"));
+	    				messages = messages.substring(messages.indexOf("|"), messages.length());
+    				} else {
+    					content = messages;
+    				}
+    				Message m = new Message(sender, content);
+    				c.addMessage(m);
+    			}
+    			users.get(j).addChat(c);
+    			j++;
+    		}
+    		br.close();
+    		for (User u : users) {
+    			System.out.println(u.getHandle());
+    		}
+    		return users;
+    	} catch (FileNotFoundException a) {
+    		return users;
+    	} catch (IOException a) {
+    		return users;
+    	}
+    	
+    }
 }
