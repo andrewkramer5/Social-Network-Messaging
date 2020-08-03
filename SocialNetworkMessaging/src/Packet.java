@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-/*
+/**
  * Packet class is used to send data between server and client. The data contained
  * in each packet varies depending on what data the server will need to carry out
  * a specific task. All packets being sent to the server have an identifer which
@@ -10,7 +10,8 @@ import java.io.Serializable;
  * 
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
  * 
- * @authors Evan Hendrich, Raj Karra
+ * @author Evan Hendrich
+ * @author Raj Karra
  * @version July 31, 2020
  */
 
@@ -54,7 +55,7 @@ public class Packet implements Serializable {
     		this.chatName = option;
     		
     	} else if (identifier.equals("signIn") || identifier.equals("addUser")
-    			|| identifier.equals("changePassword")) {
+    			  || identifier.equals("changePassword")) {
     		
     		this.password = option;
     		

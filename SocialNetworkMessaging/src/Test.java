@@ -1,10 +1,18 @@
 import java.io.*;
+
 import java.net.*;
-import org.junit.Test;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.rules.Timeout;
+/**
+ * Test class was used to test the server. It also indirectly tests all other classes
+ * that are non-GUI related, (Chat, Packet, User, Message, Client, and WriteToFile).
+ * Tests follow a logical order, I.E. send message is not tested until two users are
+ * created and have been added as friends.
+ * 
+ * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
+ * 
+ * @author Raj Karra
+ * @author Evan Hendrich
+ * @version July 31, 2020
+ */
 
 public class Test {
     String tempHandle;
@@ -25,6 +33,10 @@ public class Test {
         t.addSecondUser();
 
         t.addFirstFriend();
+        
+        t.showData("ehendrich");
+        
+        t.removeFriend();
 
         t.addNonExistentFriend();
 
@@ -51,9 +63,9 @@ public class Test {
         //and other data (users etc...) are saved as well, but the other data saves
         //the first time around. It is confusing. Message me if you have any questions
         //but right now I don't get why its happening.
-        t.changePassword();
+        //t.changePassword();
 
-        t.showData("ehendrich");
+        //t.showData("ehendrich");
 
         t.addMessageFromFirstUser();
 
@@ -69,23 +81,28 @@ public class Test {
 
         t.editChat();
 
-        t.showData("raj_the_baller");
+        //t.showData("raj_the_baller");
 
         t.deleteMessage();
 
-        t.showData("rajesh");
-
+//        t.showData("rajesh");
+//
         t.changeChatName();
-
-        t.showData("rajesh");
-
+////
+//        t.showData("rajesh");
+////
         t.deleteChat();
-
-        t.showData("raj_the_baller");
-
+////
+////        //t.showData("raj_the_baller");
+////
         t.deleteUser();
-
-        t.showData("rajesh");
+//
+//        t.showData("rajesh");
+        
+        c.sendPacket(new Packet("end", "now"));
+        
+        s.close();
+        
 
     }
 
@@ -330,6 +347,10 @@ public class Test {
 
         c.sendPacket(p);
 
+        Packet verify = c.receivePacket();  
+        
+        System.out.println(verify.getDescription());      
+
         System.out.println("Attempt to change password to newPassword");
 
         System.out.println();
@@ -339,6 +360,10 @@ public class Test {
         Packet p = new Packet("addMessage", "Coding buds", new Message("ehendrich", "Hello Raj"));
 
         c.sendPacket(p);
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
 
         System.out.println("Attempt to send message from ehendrich");
 
@@ -350,6 +375,10 @@ public class Test {
 
         c.sendPacket(p);
 
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+
         System.out.println("Attempt to send message from raj_the_baller");
 
         System.out.println();
@@ -360,46 +389,76 @@ public class Test {
 
         c.sendPacket(p);
 
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+
         System.out.println("Attempt to send another message from ehendrich");
 
         System.out.println();
     }
 
     public void addAnotherMessageFromSecondUser() throws IOException, ClassNotFoundException {
-        Packet p = new Packet("addMessage", "ehendrich, raj_the_baller", new Message("raj_the_baller", "I am quite well"));
+        Packet p = new Packet("addMessage", "ehendrich, raj_the_baller", 
+        		  new Message("raj_the_baller", "I am quite well"));
 
         c.sendPacket(p);
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
 
         System.out.println("Attempt to send another message from raj_the_baller");
 
         System.out.println();
     }
 
-    public void changeHandles() throws IOException , ClassNotFoundException{
-        c.sendPacket(new Packet("changeHandle","ehendrich","rajesh"));
+    public void changeHandles() throws IOException , ClassNotFoundException {
+        c.sendPacket(new Packet("changeHandle", "ehendrich", "rajesh"));
         Packet p = c.receivePacket();
         System.out.println("attempted to change handle");
         System.out.println(p.isVerified());
         System.out.println();
     }
 
-    public void deleteChat() throws IOException {
-        c.sendPacket(new Packet("deleteChat", "Mad Lads"));
+    public void deleteChat() throws IOException , ClassNotFoundException {
+        c.sendPacket(new Packet("deleteChat", "rajesh", "Mad Lads"));
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+        
         System.out.println("chat deleted");
     }
 
-    public void deleteUser() throws IOException{
+    public void deleteUser() throws IOException , ClassNotFoundException {
         c.sendPacket(new Packet("deleteUser", "raj_the_baller"));
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
     }
 
-    public void editChat() throws IOException {
-        c.sendPacket(new Packet("editMessage", new Message("ehendrich", "How are you?"),
-                new Message("ehendrich", "foo bar")));
+    public void editChat() throws IOException , ClassNotFoundException {
+    	Packet p = new Packet("editMessage", "rajesh, raj_the_baller", new Message("rajesh", "How are you?"), 
+    			  new Message("rajesh", "foo bar"));
+    	
+        c.sendPacket(p);
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
+        
+        System.out.println("packet sent");
 
     }
 
-    public void deleteMessage() throws IOException {
-        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("ehendrich", "How are you?")));
+    public void deleteMessage() throws IOException , ClassNotFoundException {
+        c.sendPacket(new Packet("deleteMessage", "Coding buds", new Message("rajesh", "Hello Raj")));
+
+        Packet verify = c.receivePacket();
+        
+        System.out.println(verify.getDescription());
     }
 
     public void changeChatName() throws IOException, ClassNotFoundException {
@@ -409,29 +468,37 @@ public class Test {
         System.out.println(p.isVerified());
         System.out.println(p.getDescription());
     }
+    
+    public void removeFriend() throws IOException, ClassNotFoundException {
+    	Packet p = new Packet("removeFriend", "ehendrich", "raj_the_baller");
+    	c.sendPacket(p);
+    	Packet poo = c.receivePacket();
+    	
+    	System.out.println(poo.isVerified());
+    }
 
     public void showData(String handle) throws IOException, ClassNotFoundException {
         Packet p = new Packet("update", handle);
 
         c.sendPacket(p);
 
-        User u = c.receiveUser();
+        User uu = c.receiveUser();
 
         System.out.println("Handle:");
 
-        System.out.println(u.getHandle());
+        System.out.println(uu.getHandle());
 
         System.out.println();
 
         System.out.println("Password:");
 
-        System.out.println(u.getPassword());
+        System.out.println(uu.getPassword());
 
         System.out.println();
 
         System.out.println("Friends:");
         int i = 1;
-        for (User user : u.getFriends()) {
+        for (User user : uu.getFriends()) {
             System.out.println(i + ". " + user.getHandle());
             i++;
         }
@@ -440,7 +507,7 @@ public class Test {
 
         System.out.println("Chats:");
         int a = 1;
-        System.out.println(u.getChats().get(0).getChatContent().size());
+        //System.out.println(u.getChats().get(0).getChatContent().size());
 //        System.out.println(u.getChats().get(1).getChatContent().size());
 
         for (Chat chat : u.getChats()) {
@@ -458,74 +525,5 @@ public class Test {
 
         System.out.println();
 
-    }
-    public class UserTest {
-        @Test(timeout = 1000)
-        public void getHandle() {
-            User user = new User();
-            assertEquals("rajesh", user.getNewHandle());
-        }
-        @Test(timeout = 1000)
-        public void getPassword() {
-            User user = new User();
-            assertEquals("ehendrich", user.getPassword());
-        }
-        @Test(timeout = 1000)
-        public void getFriends() {
-            User user = new User();
-            assertEquals("raj_the_baller", user.getFriends());
-        }
-        @Test(timeout = 1000)
-        public void getChats() {
-            User user = new User();
-            assertEquals("Chats:", user.getChats());
-        }
-    }
-    public class Message {
-        @Test(timeout = 1000)
-        public void getHandle() {
-            Message message = new Message();
-            assertEquals("rajesh", message.getNewHandle());
-        }
-        @Test(timeout = 1000)
-        public void getContent() {
-            User user = new User();
-            assertNotNull(message.getContent());
-        }
-    }
-    public class Chat {
-        @Test(timeout = 1000)
-        public void getChatContent() {
-            Chat chat = new Chat();
-            assertEquals(a + ". " + chat.getChatName(), chat.getChatContent());
-        }
-        @Test(timeout = 1000)
-        public void getChatMembers() {
-            Chat chat = new Chat();
-            assertNotNull(chat.getChatMembers());
-        }
-        @Test(timeout = 1000)
-        public void getChatName() {
-            Chat chat = new Chat();
-            assertEquals("rajesh", chat.getChatName());
-        }
-
-    }
-
-//    public class Server {
-//    }
-
-    public class Client {
-        @Test(timeout = 1000)
-        public void receivePacket() throws IOException, ClassNotFoundException {
-            Client client = new Client();
-            String a = "addUser", "ehendrich", "broccoli11";
-            assertEquals(a, client.receivePacket());
-        }
-
-        public void receiveUser() throws IOException, ClassNotFoundException {
-            Client client = new Client();
-            assertEquals("update", client.receiveUser());
-        }
     }
 }

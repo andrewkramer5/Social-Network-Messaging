@@ -1,14 +1,15 @@
 import java.io.Serializable;
 import java.util.*;
 
-/*
+/**
  * User class holds all information that one user of the WSC needs. It contains all
  * fields necessary then getters and setters for those fields. It also allows for the
  * addition and removal of friends as well as chats.
  * 
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
  * 
- * @authors Evan Hendrich, Raj Karra
+ * @author Evan Hendrich
+ * @author Raj Karra
  * @version July 31, 2020
  */
 
@@ -52,12 +53,12 @@ public class User implements Serializable {
         return password;
     } // getPassword
 
-    public void changeHandle(String handle) {
-        this.handle = handle;
+    public void changeHandle(String newHandle) {
+        this.handle = newHandle;
     } // changeHandle
 
-    public void changePassword(String password) {
-        this.password = password;
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
     } // changePassword
 
     public ArrayList<User> getFriends() {

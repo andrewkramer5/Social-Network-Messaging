@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/*
+/**
  * The server holds all data for all users. All data manipulation is done through this
  * server. The server can handle multiple clients connected at once. Then it waits for
  * data from the client, makes appropriate changes to the data on the server then returns
@@ -13,7 +13,8 @@ import java.net.Socket;
  *
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
  *
- * @authors Evan Hendrich, Raj Karra
+ * @author Evan Hendrich
+ * @author Raj Karra
  * @version July 31, 2020
  */
 
@@ -145,7 +146,7 @@ public class WSCServer implements Runnable {
                             oos.writeObject(user);
                             oos.flush();
                         } // end if
-                    }// end for
+                    } // end for
 
                 } else if (ident.equals("end")) {
                     break;
@@ -157,8 +158,7 @@ public class WSCServer implements Runnable {
                 WriteToFile w = new WriteToFile();
 
                 w.writeUsers(users, "data.txt");
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }  // end catch statements
@@ -315,15 +315,15 @@ public class WSCServer implements Runnable {
         } // end for
 
         for (User u: users) {
-            if(!u.getHandle().equals(packet.getHandle())) {
+            if (!u.getHandle().equals(packet.getHandle())) {
                 for (User us: u.getFriends()) {
-                    if(us.getHandle().equals(packet.getHandle())) {
+                    if (us.getHandle().equals(packet.getHandle())) {
                         us.changeHandle(packet.getNewHandle());
                     } // end if
                 } // end inner for
                 for (Chat c: u.getChats()) {
                     for (User us: c.getChatMembers()) {
-                        if(us.getHandle().equals(packet.getHandle())) {
+                        if (us.getHandle().equals(packet.getHandle())) {
                             us.changeHandle(packet.getNewHandle());
                         } // end if
                     } // end inner for
@@ -537,7 +537,8 @@ public class WSCServer implements Runnable {
         for (User user : users) {
             if (user.getHandle().equals(packet.getHandle())) {
                 user.removeFriend(removed);
-            } if (user.getHandle().equals(packet.getFriendHandle())) {
+            } 
+            if (user.getHandle().equals(packet.getFriendHandle())) {
                 user.removeFriend(remover);
             }
         }

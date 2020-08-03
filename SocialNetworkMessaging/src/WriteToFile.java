@@ -2,12 +2,13 @@ import java.io.*;
 import java.util.*;
 import java.lang.*;
 
-/*
+/**
  * This class is used to save data to a file in case the server crashes.
  * 
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
  * 
- * @authors Evan Hendrich, Raj Karra
+ * @author Evan Hendrich
+ * @author Raj Karra
  * @version July 31, 2020
  */
 
@@ -80,7 +81,7 @@ public class WriteToFile {
 //	        o.close();
 	        pw.close();
     	} catch (IOException a) {
-    		
+    		return;
     	} // end catch
     } // writeUsers
     
@@ -88,7 +89,7 @@ public class WriteToFile {
     	String filename = "data.txt";
     	var users = new ArrayList<User>();
     	var friendsList = new ArrayList<String>();
-    	var Chats = new ArrayList<String>();
+    	var conversations = new ArrayList<String>();
     	try {
     		FileReader fr = new FileReader(filename);
     		BufferedReader br = new BufferedReader(fr);
@@ -105,7 +106,7 @@ public class WriteToFile {
     			friendsList.add(friends);
     			input = input.substring(input.indexOf(':') + 1, input.length());
     			String chats = input;
-    			Chats.add(chats);
+    			conversations.add(chats);
     			input = br.readLine();
     		} // end while
     		int i = 0;
@@ -120,7 +121,7 @@ public class WriteToFile {
     			i++;
     		}
     		int j = 0;
-    		for (String s : Chats) {
+    		for (String s : conversations) {
     			var chatMembers = new ArrayList<User>();
     			if (!s.contains(";")) {
     				break;

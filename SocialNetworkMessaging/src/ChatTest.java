@@ -1,7 +1,16 @@
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
-
 import org.junit.Test;
+
+/**
+ * A set of test cases for class: Chat
+ * 
+ * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
+ * 
+ * @author Evan Hendrich
+ * @author Ho Jun Lee
+ * @version July 31, 2020
+ */
 
 public class ChatTest {
 	User a = new User("Evan", "123");

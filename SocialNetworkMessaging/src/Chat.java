@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.io.Serializable;
 
-/*
+/**
  * Chat class is used for creating and manipulating chat objects. Chat objects
  * consist of the messages in the chat, the members in the chat, and a chat name.
  * Chats can be created with or without a chat name, but if no chat name is provided
@@ -9,11 +9,12 @@ import java.io.Serializable;
  * 
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
  * 
- * @authors Evan Hendrich, Raj Karra
+ * @author Evan Hendrich
+ * @author Raj Karra
  * @version July 31, 2020
  */
 
-public class Chat implements Serializable{
+public class Chat implements Serializable {
 	ArrayList<Message> chatContent; // ArrayList of message objects that make up a chat
 	ArrayList<User> chatMembers; // ArrayList of the users in the chat
 	String chatName; // name of the chat
@@ -33,7 +34,7 @@ public class Chat implements Serializable{
 	public Chat(ArrayList<User> members, String chatName) {
 		chatContent = new ArrayList<Message>();
 		
-		ArrayList<User> chatMembers = new ArrayList<User>();
+		ArrayList<User> tempChatMembers = new ArrayList<User>();
 		
 		boolean isEmpty = chatName.equals("");
 		
@@ -41,7 +42,7 @@ public class Chat implements Serializable{
 		
 		for (User u : members) {
 			
-			chatMembers.add(u);
+			tempChatMembers.add(u);
 			
 			if (isEmpty) {
 				
@@ -50,7 +51,7 @@ public class Chat implements Serializable{
 			
 		} // end for
 		
-		this.chatMembers = chatMembers;
+		this.chatMembers = tempChatMembers;
 		
 		if (isEmpty) {
 			this.chatName = defaultChatName.substring(0, defaultChatName.length() - 2);
@@ -117,7 +118,7 @@ public class Chat implements Serializable{
 		for (Message m : chatContent) {
 			
 			if (m.getHandle().equals(message.getHandle()) &&
-					m.getContent().equals(message.getContent())) {
+					  m.getContent().equals(message.getContent())) {
 				
 				removed = m;
 			} // end if
@@ -136,7 +137,7 @@ public class Chat implements Serializable{
 		for (Message m : chatContent) {
 			
 			if (m.getHandle().equals(oldMessage.getHandle()) && 
-					m.getContent().equals(oldMessage.getContent())) {
+					  m.getContent().equals(oldMessage.getContent())) {
 				
 				m.setContent(newMessage.getContent());
 			} // end if
