@@ -3,6 +3,16 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+/**
+ * A set of test cases for class: User
+ * 
+ * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
+ * 
+ * @author Evan Hendrich
+ * @author Ho Jun Lee
+ * @version July 31, 2020
+ */
+
 public class UserTest {
     @Test(timeout = 1000)
     public void getHandle() {

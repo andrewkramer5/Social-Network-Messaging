@@ -8,6 +8,16 @@ import org.junit.Before;
 import org.junit.rules.Timeout;
 import java.util.ArrayList;
 
+/**
+ * A set of test cases for class: Packet
+ * 
+ * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
+ * 
+ * @author Evan Hendrich
+ * @author Ho Jun Lee
+ * @version July 31, 2020
+ */
+
 public class PacketTest {
     @Test(timeout = 1000)
     public void getIdentifier() {

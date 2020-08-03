@@ -1,13 +1,14 @@
 import java.io.Serializable;
 
-/*
+/**
  * Message class consists of two fields, a constructor, and getters and setters. It
  * represents a message, so it has the message content and the handle of the user who
  * send the message.
  * 
  * <p>Purdue University -- CS18000 -- Summer 2020 -- Project 5 -- Messaging Service</p>
  * 
- * @authors Evan Hendrich, Raj Karra
+ * @author Evan Hendrich
+ * @author Raj Karra
  * @version July 31, 2020
  */
 
