@@ -45,7 +45,7 @@ public class ClientApplication {
     public static void main(String[] args) throws IOException {
 
         ClientApplication app = new ClientApplication();
-
+        /*
         //testing
         app.setLoggedInUser(new User("Andrew", ""));
         app.loggedInUser.addFriend(new User("Raj", "1234"));
@@ -59,6 +59,7 @@ public class ClientApplication {
         app.loggedInUser.getChats().get(0).addMessage(new Message("Raj", "Hello guys"));
         app.loggedInUser.getChats().get(0).addMessage(new Message("Andrew", "Hello back"));
         //end testing
+        */
 
         SwingUtilities.invokeLater(new Runnable()
         {
